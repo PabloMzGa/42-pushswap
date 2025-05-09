@@ -6,46 +6,11 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 20:56:44 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/08 21:15:17 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/09 12:13:33 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pushswap.h"
-
-/**
- * @brief Performs a swap operation on one or both stacks and writes the
- *        corresponding operation name to the standard output.
- *
- * @param stack_a Pointer to the first stack (can be NULL).
- * @param stack_b Pointer to the second stack (can be NULL).
- *
- * The function performs the following actions:
- * - If only `stack_a` is provided, it swaps the top two elements of `stack_a`
- *   and writes "sa\n" to the standard output.
- * - If only `stack_b` is provided, it swaps the top two elements of `stack_b`
- *   and writes "sb\n" to the standard output.
- * - If both `stack_a` and `stack_b` are provided, it swaps the top two elements
- *   of both stacks and writes "ss\n" to the standard output.
- */
-void	swap(t_stack *stack_a, t_stack *stack_b)
-{
-	if (stack_a && !stack_b)
-	{
-		swap_stack(stack_a);
-		write(1, "sa\n", 3);
-	}
-	else if (!stack_a && stack_b)
-	{
-		swap_stack(stack_b);
-		write(1, "sb\n", 3);
-	}
-	else if (stack_a && stack_b)
-	{
-		swap_stack(stack_a);
-		swap_stack(stack_b);
-		write(1, "ss\n", 3);
-	}
-}
 
 /**
  * @brief Swaps the first two elements of a stack.
@@ -80,3 +45,25 @@ void static	swap_stack(t_stack *stack)
 	second_node->previous = NULL;
 	stack->top_element = second_node;
 }
+
+void	swap(t_stack *stack_a, t_stack *stack_b)
+{
+	if (stack_a && !stack_b)
+	{
+		swap_stack(stack_a);
+		write(1, "sa\n", 3);
+	}
+	else if (!stack_a && stack_b)
+	{
+		swap_stack(stack_b);
+		write(1, "sb\n", 3);
+	}
+	else if (stack_a && stack_b)
+	{
+		swap_stack(stack_a);
+		swap_stack(stack_b);
+		write(1, "ss\n", 3);
+	}
+}
+
+

@@ -19,6 +19,7 @@
 		"string.h": "c",
 		"pipex.h": "c",
 		"errno.h": "c",
-		"float.h": "c"
+		"float.h": "c",
+		"pushswap.h": "c"
 	}
 }
