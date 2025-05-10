@@ -1,19 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   test_calculate_cost.c                              :+:      :+:    :+:   */
+/*   test_calculate_cost.old                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 21:00:00 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/10 00:31:04 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/10 01:15:56 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pushswap.h"
 #include <stdio.h>
 
-void	print_stack(t_stack *stack, char stackname)
+/* void	print_stack(t_stack *stack, char stackname)
 {
 	t_blist	*current;
 
@@ -30,7 +30,7 @@ void	print_stack(t_stack *stack, char stackname)
 		current = current->next;
 	}
 	printf("\n");
-}
+} */
 
 /**
  * Configura un stack con valores específicos para las pruebas
@@ -218,7 +218,7 @@ void	test_case_4(void)
 	clean_stacks(stack_a, stack_b);
 }
 
-int	main(void)
+/* int	main(void)
 {
 	printf("Testing calculate_cost function\n");
 	// Ejecutar casos de prueba
@@ -227,4 +227,4 @@ int	main(void)
 	test_case_3();
 	test_case_4();
 	return (0);
-}
+} */

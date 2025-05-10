@@ -6,11 +6,26 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 10:09:50 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/09 20:53:45 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/10 02:15:45 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pushswap.h"
+
+
+/**
+ * TODO: No tengo youy muy claro que el algoritmo esté funcionando.
+ * Muchas veces decide pasar al Stack b números muy diferentes al que debería.
+ * Genera ciertos grupos medio ordenados, pero no deja 100% listo el stack B.
+ * Quizás es una forma de equilibrar entre operaciones de A a B y viceversa,
+ * pero es muy posible que esté fallando en la toma de decisión del coste.
+ *
+ * Debería probar si es relativamente fácil hacer el llenado de B a A en orden
+ * perfecto (es decir, no usando heurísticos sino forzando el siguiente
+ * número) y hacer pruebas de rendimiento.
+ *
+ * Si se aleja mucho de lo ótpimo, habría que mirar esto
+ */
 
 t_stack	*parse_num(int argc, char *argv[])
 {
@@ -41,19 +56,33 @@ t_stack	*parse_num(int argc, char *argv[])
 	return (stack_a->size = i - 1, stack_a);
 }
 
+void	print_stack(t_stack *stack, char stackname)
+{
+	t_blist	*current;
+
+	if (!stack || !stack->top_element)
+	{
+		printf("Stack vacío\n");
+		return ;
+	}
+	current = stack->top_element;
+	printf("Stack %c: ", stackname);
+	while (current)
+	{
+		printf("%d ", (current->value));
+		current = current->next;
+	}
+	printf("\n");
+}
 
 
-/* int	main(int argc, char *argv[])
+
+int	main(int argc, char *argv[])
 {
 	t_stack	*stack_a;
 	t_stack	*stack_b;
-	t_cost	*cost;
 
 	stack_a = parse_num(argc, argv);
-	print_stack(stack_a, 'a');
-	print_stack(stack_b, 'b');
 	stack_b = initialize_b_stack(stack_a);
-	print_stack(stack_a, 'a');
-	print_stack(stack_b, 'b');
-	cost = calculate_cost(stack_a, stack_b);
-} */
+	push_b_algo(stack_a, stack_b);
+}

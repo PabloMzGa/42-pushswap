@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:57:56 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/10 00:06:18 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/10 01:41:10 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static void	search_top(t_cost **cost, t_stack *stack_a, t_stack *stack_b)
 	int	tmp_cost;
 
 	index = 0;
-	while (index < cost_depth)
+	while (index < cost_depth && index < stack_a->size)
 	{
 		b_distance = get_lowest_distance(get_node_from_index(index,
 					stack_a->top_element)->value, stack_a, stack_b);

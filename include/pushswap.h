@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:10:32 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/10 00:15:23 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/10 01:58:07 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
  * How many positions will the algorithm consider for possible candidates from
  * stack a to push into stack b in the first phase
  */
-# define cost_depth 4
+# define cost_depth 7
 
 /////////////////////////////// STRUCTS ////////////////////////////////////////
 typedef struct s_bidirectional_list
@@ -79,7 +79,6 @@ typedef struct s_cost_info
 t_cost							*calculate_cost(t_stack *stack_a,
 									t_stack *stack_b);
 
-
 /**
  * @brief Calculates the lowest distance to move a number `n` into its correct
  *        position in stack_b, based on the closest higher and lower candidates.
@@ -128,6 +127,26 @@ int								get_lowest_distance(int n, t_stack *stack_a,
  * @return The optimized cost of the movements.
  */
 int								get_optimized_cost(int a_mov, int b_mov);
+
+/**
+ * @brief Moves elements from stack A to stack B using an optimized strategy
+ *
+ * This function implements part of the Push Swap sorting algorithm.
+ * It transfers elements from stack A to stack B until only 3 elements
+ * remain in stack A. For each element to be moved, it:
+ *
+ * 1. Calculates the optimal moves needed
+ *
+ * 2. Performs combined movements when possible (rr, rrr)
+ *
+ * 3. Performs individual stack movements when necessary
+ *
+ * 4. Pushes the correctly positioned element to stack B
+ *
+ * @param stack_a Pointer to the source stack
+ * @param stack_b Pointer to the destination stack
+ */
+void	push_b_algo(t_stack *stack_a, t_stack *stack_b);
 
 /**
  * @brief Searches for the closest higher value than the given number in the
