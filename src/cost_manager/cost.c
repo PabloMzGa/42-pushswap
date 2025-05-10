@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:57:56 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/10 01:41:10 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/10 14:02:05 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,11 @@ static t_cost	*initialize_cost(t_stack *stack_a, t_stack *stack_b)
 	return (cost);
 }
 
-
+/**
+ * TODO: En caso de empate entre subir o bajar B, tendría
+ * que comprobar si A tiene que subir o bajar, para aprovechar
+ * los dobles.
+ */
 static void	search_top(t_cost **cost, t_stack *stack_a, t_stack *stack_b)
 {
 	int	index;
@@ -47,9 +51,9 @@ static void	search_top(t_cost **cost, t_stack *stack_a, t_stack *stack_b)
 	index = 0;
 	while (index < cost_depth && index < stack_a->size)
 	{
-		b_distance = get_lowest_distance(get_node_from_index(index,
-					stack_a->top_element)->value, stack_a, stack_b);
 		a_distance = get_top_distance(index, stack_a);
+		b_distance = get_lowest_distance(get_node_from_index(index,
+					stack_a->top_element)->value, stack_a, stack_b, a_distance);
 		tmp_cost = get_optimized_cost(a_distance, b_distance);
 		if (tmp_cost < (*cost)->total_cost)
 		{
@@ -72,9 +76,9 @@ static void	search_bottom(t_cost **cost, t_stack *stack_a, t_stack *stack_b)
 	index = stack_a->size - 1;
 	while (stack_a->size - cost_depth > 0 && index > stack_a->size - cost_depth)
 	{
-		b_distance = get_lowest_distance(get_node_from_index(index,
-					stack_a->top_element)->value, stack_a, stack_b);
 		a_distance = get_top_distance(index, stack_a);
+		b_distance = get_lowest_distance(get_node_from_index(index,
+					stack_a->top_element)->value, stack_a, stack_b, a_distance);
 		tmp_cost = get_optimized_cost(a_distance, b_distance);
 		if (tmp_cost < (*cost)->total_cost)
 		{
@@ -89,13 +93,8 @@ static void	search_bottom(t_cost **cost, t_stack *stack_a, t_stack *stack_b)
 
 t_cost	*calculate_cost(t_stack *stack_a, t_stack *stack_b)
 {
-	int		index;
-	int		b_distance;
-	int		a_distance;
-	int		tmp_cost;
 	t_cost	*cost;
 
-	index = 0;
 	cost = initialize_cost(stack_a, stack_b);
 	search_top(&cost, stack_a, stack_b);
 	search_bottom(&cost, stack_a, stack_b);

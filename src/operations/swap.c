@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 20:56:44 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/09 12:13:33 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/10 12:45:04 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
  * @note After the swap, the second element becomes the new top element,
  *       and the original top element becomes the second element.
  */
-void static	swap_stack(t_stack *stack)
+static void	swap_stack(t_stack *stack)
 {
 	t_blist	*first_node;
 	t_blist	*second_node;
@@ -65,5 +65,3 @@ void	swap(t_stack *stack_a, t_stack *stack_b)
 		write(1, "ss\n", 3);
 	}
 }
-
-

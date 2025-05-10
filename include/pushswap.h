@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:10:32 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/10 01:58:07 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/10 14:01:31 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
  * How many positions will the algorithm consider for possible candidates from
  * stack a to push into stack b in the first phase
  */
-# define cost_depth 7
+# define cost_depth 10
 
 /////////////////////////////// STRUCTS ////////////////////////////////////////
 typedef struct s_bidirectional_list
@@ -32,7 +32,7 @@ typedef struct s_bidirectional_list
 
 typedef struct s_stack
 {
-	size_t						size;
+	int							size;
 	t_blist						*top_element;
 
 }								t_stack;
@@ -65,6 +65,58 @@ typedef struct s_cost_info
 ////////////////////////////// ALGORITHM ///////////////////////////////////////
 
 /**
+ * @brief Applies rotate or reverse rotate operation on stack A based on counter
+ *
+ * This function applies different rotation operations depending on the counter
+ * value:
+ * - If counter is negative: performs a reverse rotation and increments counter
+ * - If counter is zero or positive: performs a rotation and decrements counter
+ *
+ * @param stack Pointer to stack A structure
+ * @param counter Pointer to counter that tracks rotation operations
+ *
+ * @note The NULL parameter in rotation calls indicates that output is
+ *       suppressed
+ */
+void							apply_a_rot(t_stack *stack, int *counter);
+
+/**
+ * @brief Applies rotate or reverse rotate operation on stack B based on counter
+ *
+ * This function applies different rotation operations depending on the counter
+ * value:
+ * - If counter is negative: performs a reverse rotation and increments counter
+ * - If counter is zero or positive: performs a rotation and decrements counter
+ *
+ * @param stack Pointer to stack B structure
+ * @param counter Pointer to counter that tracks rotation operations
+ *
+ * @note The NULL parameter in rotation calls indicates that output is
+ *       suppressed
+ */
+void							apply_b_rot(t_stack *stack, int *counter);
+
+/**
+ * @brief Applies rotation to both stacks simultaneously based on movement cost
+ *
+ * This function optimizes stack operations by performing simultaneous rotations
+ * on both stacks when possible. Depending on the sign of stack_a_mov in the
+ * cost structure, it either:
+ *
+ * - Performs reverse rotation on both stacks if movement is negative
+ *
+ * - Performs forward rotation on both stacks if movement is positive
+ *
+ * After each operation, it updates the movement counters in the cost structure.
+ *
+ * @param stack_a Pointer to the first stack
+ * @param stack_b Pointer to the second stack
+ * @param cost Pointer to cost structure containing movement information
+ */
+void							apply_double_rot(t_stack *stack_a,
+									t_stack *stack_b, t_cost *cost);
+
+/**
  * @brief Calculates the cost of moving elements between two stacks.
  *
  * This function computes the cost associated with moving elements
@@ -79,28 +131,9 @@ typedef struct s_cost_info
 t_cost							*calculate_cost(t_stack *stack_a,
 									t_stack *stack_b);
 
-/**
- * @brief Calculates the lowest distance to move a number `n` into its correct
- *        position in stack_b, based on the closest higher and lower candidates.
- *
- * This function determines the closest higher and lower candidates to `n` in
- * stack_b, calculates their respective distances, and returns the distance
- * that requires the least movement. If no valid candidates are found, the
- * function triggers an error.
- *
- * @param n The number to be positioned in stack_b.
- * @param stack_a Pointer to stack_a, used for error handling.
- * @param stack_b Pointer to stack_b, where the number `n` is to be positioned.
- *
- * @return The lowest distance (positive or negative) required to move `n` to
- *         its correct position in stack_b. If distances are equal, the higher
- *         candidate's distance is prioritized.
- *
- * @note If both candidates are invalid or an unexpected condition occurs,
- *       the function calls `error()` to handle the situation.
- */
+
 int								get_lowest_distance(int n, t_stack *stack_a,
-									t_stack *stack_b);
+									t_stack *stack_b, int a_distance);
 
 /**
  * @brief Calculates the optimized cost of moving elements between stacks.
@@ -129,6 +162,22 @@ int								get_lowest_distance(int n, t_stack *stack_a,
 int								get_optimized_cost(int a_mov, int b_mov);
 
 /**
+ * @brief Moves all elements from stack_b to stack_a in descending order
+ *
+ * This function implements the "push A" phase of the algorithm by:
+ * 1. Finding the highest value node in stack_b
+ * 2. Rotating stack_b until that node is at the top
+ * 3. Pushing the top node from stack_b to stack_a
+ * 4. Repeating until stack_b is empty
+ *
+ * After execution, all elements will be in stack_a and stack_b will be empty.
+ *
+ * @param stack_a Pointer to the destination stack
+ * @param stack_b Pointer to the source stack
+ */
+void							push_a_algo(t_stack *stack_a, t_stack *stack_b);
+
+/**
  * @brief Moves elements from stack A to stack B using an optimized strategy
  *
  * This function implements part of the Push Swap sorting algorithm.
@@ -146,7 +195,7 @@ int								get_optimized_cost(int a_mov, int b_mov);
  * @param stack_a Pointer to the source stack
  * @param stack_b Pointer to the destination stack
  */
-void	push_b_algo(t_stack *stack_a, t_stack *stack_b);
+void							push_b_algo(t_stack *stack_a, t_stack *stack_b);
 
 /**
  * @brief Searches for the closest higher value than the given number in the
@@ -343,6 +392,19 @@ void							blstadd_front(t_blist **lst, t_blist *new);
 t_blist							*create_node(int n);
 
 /**
+ * @brief Find the index of the node with the highest value in a linked list
+ *
+ * This function traverses the given linked list and identifies the node
+ * containing the highest value. It returns the index (position) of this node
+ * in the list, with the first node being at index 0.
+ *
+ * @param lst Pointer to the first node of the linked list to search
+ * @return The index of the node with the highest value, or -1 if the list is
+ *         empty
+ */
+int								get_highest_node(t_blist *lst);
+
+/**
  * @brief Retrieves the last node in a linked list.
  *
  * This function traverses a linked list starting from the given node
@@ -384,7 +446,7 @@ t_blist							*get_node_from_index(int index, t_blist *node);
  * @return The distance to the bottom of the stack. Positive if closer to the
  *         bottom, negative if closer to the top.
  */
-int	get_bottom_distance(int index, t_stack *stack);
+int								get_bottom_distance(int index, t_stack *stack);
 
 /**
  * @brief Calculates the distance to move an element to the top of the stack.
@@ -400,7 +462,7 @@ int	get_bottom_distance(int index, t_stack *stack);
  *         A positive value indicates forward movement, while a negative
  *         value indicates reverse movement.
  */
-int	get_top_distance(int index, t_stack *stack);
+int								get_top_distance(int index, t_stack *stack);
 
 /////////////////////////// STACK OPERATIONS ///////////////////////////////////
 
@@ -494,4 +556,9 @@ void							rotate(t_stack *stack_a, t_stack *stack_b);
  */
 void							reverse_rotate(t_stack *stack_a,
 									t_stack *stack_b);
+
+///////////////////////////////// DEBUG ////////////////////////////////////////
+void							print_stack(t_stack *stack, char stackname);
+
+void							print_cost(t_cost *cost, t_stack *stack_a);
 #endif

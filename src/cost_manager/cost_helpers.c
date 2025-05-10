@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:57:56 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/10 00:18:27 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/10 14:13:07 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ static int	set_hdistance(int candidate, t_stack *stack)
 		return (INT_MAX);
 }
 
-int	get_lowest_distance(int n, t_stack *stack_a, t_stack *stack_b)
+int	get_lowest_distance(int n, t_stack *stack_a, t_stack *stack_b,
+		int a_distance)
 {
 	int	h_distance;
 	int	l_distance;
@@ -52,13 +53,20 @@ int	get_lowest_distance(int n, t_stack *stack_a, t_stack *stack_b)
 		error(stack_a, stack_b);
 	h_distance = set_hdistance(h_candidate, stack_b);
 	l_distance = set_ldistance(l_candidate, stack_b);
-
-	if (abs(h_distance) <= abs(l_distance) && h_distance != INT_MAX)
-		return (h_distance);
-	else if (l_distance != INT_MAX)
+	if (h_distance == INT_MAX && l_distance != INT_MAX)
 		return (l_distance);
-	else
+	else if (h_distance != INT_MAX && l_distance == INT_MAX)
+		return (h_distance);
+	else if (h_distance == INT_MAX && l_distance == INT_MAX)
+	{
 		error(stack_a, stack_b);
+		return (0);
+	}
+	else if (get_optimized_cost(a_distance,
+			h_distance) < get_optimized_cost(a_distance, l_distance))
+		return (h_distance);
+	else
+		return (l_distance);
 }
 
 int	get_optimized_cost(int a_mov, int b_mov)

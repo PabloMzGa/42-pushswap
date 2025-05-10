@@ -6,12 +6,11 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 10:09:50 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/10 02:15:45 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/10 12:36:16 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pushswap.h"
-
 
 /**
  * TODO: No tengo youy muy claro que el algoritmo esté funcionando.
@@ -25,6 +24,11 @@
  * número) y hacer pruebas de rendimiento.
  *
  * Si se aleja mucho de lo ótpimo, habría que mirar esto
+ *
+ * PD: Habia un bug y siempre hacía ra y rra, nunca rb. Ahora el pseudo-orden
+ * es mucho más consistente. Sigue sin ordenarlo todo el stack B al completo,
+ * pero generar "chunks" de numeros ordenados, lo que puede facilitar el
+ * devolverlos a A.
  */
 
 t_stack	*parse_num(int argc, char *argv[])
@@ -56,27 +60,6 @@ t_stack	*parse_num(int argc, char *argv[])
 	return (stack_a->size = i - 1, stack_a);
 }
 
-void	print_stack(t_stack *stack, char stackname)
-{
-	t_blist	*current;
-
-	if (!stack || !stack->top_element)
-	{
-		printf("Stack vacío\n");
-		return ;
-	}
-	current = stack->top_element;
-	printf("Stack %c: ", stackname);
-	while (current)
-	{
-		printf("%d ", (current->value));
-		current = current->next;
-	}
-	printf("\n");
-}
-
-
-
 int	main(int argc, char *argv[])
 {
 	t_stack	*stack_a;
@@ -85,4 +68,5 @@ int	main(int argc, char *argv[])
 	stack_a = parse_num(argc, argv);
 	stack_b = initialize_b_stack(stack_a);
 	push_b_algo(stack_a, stack_b);
+	push_a_algo(stack_a, stack_b);
 }

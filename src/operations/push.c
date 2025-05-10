@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 21:18:26 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/09 12:12:38 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/10 12:44:53 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@
  * @note If stack_b is empty, this function may result in undefined behavior.
  * Ensure that stack_b has at least one element before calling this function.
  */
-void static	push_a(t_stack *stack_a, t_stack *stack_b)
+static void	push_a(t_stack *stack_a, t_stack *stack_b)
 {
 	t_blist	*moving_node;
 
@@ -64,7 +64,7 @@ void static	push_a(t_stack *stack_a, t_stack *stack_b)
  * @note If stack_a is empty, this function may result in undefined behavior.
  * Ensure that stack_b has at least one element before calling this function.
  */
-void static	push_b(t_stack *stack_a, t_stack *stack_b)
+static void	push_b(t_stack *stack_a, t_stack *stack_b)
 {
 	t_blist	*moving_node;
 
