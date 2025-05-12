@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:10:32 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/10 14:01:31 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/10 18:07:46 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,6 @@
 # define PUSHSWAP_H
 
 # include "libft.h"
-
-/**
- * How many positions will the algorithm consider for possible candidates from
- * stack a to push into stack b in the first phase
- */
-# define cost_depth 10
 
 /////////////////////////////// STRUCTS ////////////////////////////////////////
 typedef struct s_bidirectional_list
@@ -51,8 +45,8 @@ typedef struct s_stack
  *                    the movements are in reverse.
  * @param total_cost Total cost of the operation, typically calculated as the
  *                   sum of movements in both stacks.
- * @param a_index Index of the element in stack A involved in the operation.
- * @param b_index Index of the element in stack B involved in the operation.
+ * @param candidate_index Index of the element in stack A involved in the
+ *                        operation.
  */
 typedef struct s_cost_info
 {
@@ -130,7 +124,6 @@ void							apply_double_rot(t_stack *stack_a,
  */
 t_cost							*calculate_cost(t_stack *stack_a,
 									t_stack *stack_b);
-
 
 int								get_lowest_distance(int n, t_stack *stack_a,
 									t_stack *stack_b, int a_distance);
