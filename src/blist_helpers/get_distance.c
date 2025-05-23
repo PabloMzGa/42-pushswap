@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 17:06:07 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/10 15:21:46 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/23 13:40:31 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,24 @@
 
 int	get_top_distance(int index, t_stack *stack)
 {
-    if (stack->size / 2 >= index)
-        return (index);
-    else
-        return (-(stack->size - index));
+	/* 	if (stack->size / 2 > index)
+			return (index);
+		else
+			return (-(stack->size - index)); */
+	if (stack->size == 1)
+		return (0);
+	else if (index < stack->size / 2)
+		return (index);
+	else
+		return (-(stack->size - index));
 }
-
 
 int	get_bottom_distance(int index, t_stack *stack)
 {
-    if (stack->size / 2 < index)
-        return (-(stack->size - index - 1));
-    else
-        return (stack->size - index - 1);
+	if (stack->size == 1)
+		return (0);
+	else if (index < stack->size / 2)
+		return (index + 1);
+	else
+		return (-(stack->size - index - 1));
 }

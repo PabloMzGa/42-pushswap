@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 10:09:50 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/10 12:36:16 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/23 13:44:34 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,6 @@ int	main(int argc, char *argv[])
 	stack_b = initialize_b_stack(stack_a);
 	push_b_algo(stack_a, stack_b);
 	push_a_algo(stack_a, stack_b);
+	clean_stack(stack_a);
+	clean_stack(stack_b);
 }

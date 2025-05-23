@@ -6,9 +6,14 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:10:32 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/10 18:07:46 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/23 13:46:43 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+/**
+ * TODO: Buscar una forma de limpiar los cost cuando llama a error(). Quizás
+ * guardar una referencia a cost en los stacks para poder limpiarlos?
+ */
 
 #ifndef PUSHSWAP_H
 
@@ -56,7 +61,9 @@ typedef struct s_cost_info
 	int							candidate_index;
 }								t_cost;
 
+////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////// ALGORITHM ///////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /**
  * @brief Applies rotate or reverse rotate operation on stack A based on counter
@@ -226,7 +233,9 @@ int								search_closest_high(int n, t_stack *stack);
  */
 int								search_closest_low(int n, t_stack *stack);
 
+////////////////////////////////////////////////////////////////////////////////
 /////////////////////////// ARGUMENTS CHECK ////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /**
  * @brief Checks if the given string represents a valid numeric value.
@@ -279,7 +288,21 @@ int								check_repeated_number(int argc, char *argv[],
 int								is_arg_correct(int argc, char *argv[], int i,
 									t_stack *stack_a);
 
-//////////////////////////////// ERROR /////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// UTILS /////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * @brief Frees all memory associated with a stack and its elements.
+ *
+ * This function iterates through all the elements in the stack, freeing
+ * the memory allocated for each element's content and the element itself.
+ * Finally, it frees the memory allocated for the stack structure.
+ *
+ * @param stack A pointer to the stack to be cleaned. The stack and all
+ *              its elements will be deallocated.
+ */
+void	clean_stack(t_stack *stack);
 
 /**
  * @brief Handles errors by cleaning up the provided stacks and exiting the
@@ -300,7 +323,9 @@ int								is_arg_correct(int argc, char *argv[], int i,
  */
 void							error(t_stack *stack_a, t_stack *stack_b);
 
+////////////////////////////////////////////////////////////////////////////////
 /////////////////////////// INITIALIZATION /////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /**
  * @brief Allocates and initializes an empty stack.
@@ -338,7 +363,9 @@ t_stack							*initialize_b_stack(t_stack *stack_a);
  */
 t_stack							*initialize_stack(int top_value);
 
+////////////////////////////////////////////////////////////////////////////////
 //////////////////////////// LIST HELPERS //////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /**
  * @brief Adds a new element to the end of a doubly linked list.
@@ -425,19 +452,17 @@ t_blist							*get_last_node(t_blist *lst);
 t_blist							*get_node_from_index(int index, t_blist *node);
 
 /**
- * @brief Calculates the distance from a given index to the bottom of the stack.
+ * @brief Calculate the distance to reach an element in a stack
  *
- * This function determines the number of steps required to reach the bottom
- * of the stack from a specified index. If the index is in the second half
- * of the stack, the distance is returned as a positive value. Otherwise,
- * the distance is returned as a negative value, indicating that it is
- * closer to the top.
+ * This function calculates the number of moves needed to reach a specific index
+ * in the stack. If the index is in the first half of the stack, it returns a
+ * positive value representing moves from the top. If it's in the second half,
+ * it returns a negative value representing moves from the bottom.
  *
- * @param index The index in the stack for which the distance is calculated.
- * @param stack A pointer to the stack structure containing the size of the
- *              stack.
- * @return The distance to the bottom of the stack. Positive if closer to the
- *         bottom, negative if closer to the top.
+ * @param index The index of the element in the stack
+ * @param stack Pointer to the stack structure
+ * @return int Distance to the bottom: positive value for up (normal)
+ *         operations, negative for bottom (reverse) operations
  */
 int								get_bottom_distance(int index, t_stack *stack);
 
@@ -457,7 +482,9 @@ int								get_bottom_distance(int index, t_stack *stack);
  */
 int								get_top_distance(int index, t_stack *stack);
 
+////////////////////////////////////////////////////////////////////////////////
 /////////////////////////// STACK OPERATIONS ///////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /**
  * @brief Performs a swap operation on one or both stacks and writes the
@@ -550,7 +577,10 @@ void							rotate(t_stack *stack_a, t_stack *stack_b);
 void							reverse_rotate(t_stack *stack_a,
 									t_stack *stack_b);
 
+////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// DEBUG ////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 void							print_stack(t_stack *stack, char stackname);
 
 void							print_cost(t_cost *cost, t_stack *stack_a);
