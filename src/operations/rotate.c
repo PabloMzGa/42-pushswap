@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   rotate.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:09:51 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/09 12:48:07 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/26 21:15:59 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,19 +35,19 @@ static void	reverse_rotate_stack(t_stack *stack)
 	blstadd_back(&(stack->top_element), top_node);
 }
 
-void	rotate(t_stack *stack_a, t_stack *stack_b)
+void	rotate(t_stack *stack_a, t_stack *stack_b, t_cost *cost)
 {
 	if (stack_a && !stack_b)
 	{
 		if (!stack_a->top_element || stack_a->size <= 1)
-			error(stack_a, stack_b);
+			error(stack_a, stack_b, cost);
 		reverse_rotate_stack(stack_a);
 		write(1, "ra\n", 3);
 	}
 	else if (!stack_a && stack_b)
 	{
 		if (!stack_b->top_element || stack_b->size <= 1)
-			error(stack_a, stack_b);
+			error(stack_a, stack_b, cost);
 		reverse_rotate_stack(stack_b);
 		write(1, "rb\n", 3);
 	}
@@ -55,7 +55,7 @@ void	rotate(t_stack *stack_a, t_stack *stack_b)
 	{
 		if (!stack_a->top_element || !stack_b->top_element || stack_b->size <= 1
 			|| stack_a->size <= 1)
-			error(stack_a, stack_b);
+			error(stack_a, stack_b, cost);
 		reverse_rotate_stack(stack_a);
 		reverse_rotate_stack(stack_b);
 		write(1, "rr\n", 3);

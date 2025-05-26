@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cost.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:57:56 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/10 19:12:06 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/26 21:24:52 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,99 +31,41 @@ static t_cost	*initialize_cost(t_stack *stack_a, t_stack *stack_b)
 
 	cost = malloc(sizeof(t_cost));
 	if (!cost)
-		error(stack_a, stack_b);
+		error(stack_a, stack_b, NULL);
 	cost->total_cost = INT_MAX;
 	return (cost);
 }
 
-static void	search(t_cost **cost, t_stack *stack_a, t_stack *stack_b)
+static void	compare_cost(t_cost **cost, int tmp_cost, int index, int ab_dist[])
 {
-	int	index;
-	int	b_distance;
-	int	a_distance;
-	int	tmp_cost;
-
-	index = 0;
-	while (index < stack_a->size)
+	if (tmp_cost < (*cost)->total_cost)
 	{
-		a_distance = get_top_distance(index, stack_a);
-		b_distance = get_lowest_distance(get_node_from_index(index,
-					stack_a->top_element)->value, stack_a, stack_b, a_distance);
-		tmp_cost = get_optimized_cost(a_distance, b_distance);
-		if (tmp_cost < (*cost)->total_cost)
-		{
-			(*cost)->total_cost = tmp_cost;
-			(*cost)->candidate_index = index;
-			(*cost)->stack_a_mov = a_distance;
-			(*cost)->stack_b_mov = b_distance;
-		}
-		++index;
+		(*cost)->total_cost = tmp_cost;
+		(*cost)->candidate_index = index;
+		(*cost)->stack_a_mov = ab_dist[0];
+		(*cost)->stack_b_mov = ab_dist[1];
 	}
 }
+
 t_cost	*calculate_cost(t_stack *stack_a, t_stack *stack_b)
 {
 	t_cost	*cost;
+	int		index;
+	int		ab_dist[2];
+	int		tmp_cost;
 
 	cost = initialize_cost(stack_a, stack_b);
-	search(&cost, stack_a, stack_b);
-	// search_top(&cost, stack_a, stack_b);
-	// search_bottom(&cost, stack_a, stack_b);
-	// search_chunks(&cost, stack_a, stack_b, 10);
-	return (cost);
-}
-
-/* static void	search_top(t_cost **cost, t_stack *stack_a, t_stack *stack_b)
-{
-	int	index;
-	int	b_distance;
-	int	a_distance;
-	int	tmp_cost;
-	int	cost_depth;
-
-	cost_depth = stack_a->size / 1;
-	if (cost_depth == 0)
-		cost_depth = stack_a->size;
 	index = 0;
-	while (index < cost_depth && index < stack_a->size)
+	while (index < stack_a->size)
 	{
-		a_distance = get_top_distance(index, stack_a);
-		b_distance = get_lowest_distance(get_node_from_index(index,
-					stack_a->top_element)->value, stack_a, stack_b, a_distance);
-		tmp_cost = get_optimized_cost(a_distance, b_distance);
-		if (tmp_cost < (*cost)->total_cost)
-		{
-			(*cost)->total_cost = tmp_cost;
-			(*cost)->candidate_index = index;
-			(*cost)->stack_a_mov = a_distance;
-			(*cost)->stack_b_mov = b_distance;
-		}
+		ab_dist[0] = get_top_distance(index, stack_a);
+		ab_dist[1] = get_lowest_distance(get_node_from_index(index,
+					stack_a->top_element)->value, stack_b, ab_dist[0]);
+		if (ab_dist[1] == INT_MAX)
+			return (ft_free((void **)&cost), NULL);
+		tmp_cost = get_optimized_cost(ab_dist[0], ab_dist[1]);
 		++index;
 	}
-} */
-
-/* static void	search_bottom(t_cost **cost, t_stack *stack_a, t_stack *stack_b)
-{
-	int	index;
-	int	b_distance;
-	int	a_distance;
-	int	tmp_cost;
-	int	cost_depth;
-
-	cost_depth = stack_a->size / 1;
-	index = stack_a->size - 1;
-	while (index >= stack_a->size - cost_depth)
-	{
-		a_distance = get_top_distance(index, stack_a);
-		b_distance = get_lowest_distance(get_node_from_index(index,
-					stack_a->top_element)->value, stack_a, stack_b, a_distance);
-		tmp_cost = get_optimized_cost(a_distance, b_distance);
-		if (tmp_cost < (*cost)->total_cost)
-		{
-			(*cost)->total_cost = tmp_cost;
-			(*cost)->candidate_index = index;
-			(*cost)->stack_a_mov = a_distance;
-			(*cost)->stack_b_mov = b_distance;
-		}
-		--index;
-	}
-} */
+	compare_cost(&cost, tmp_cost, index, ab_dist);
+	return (cost);
+}

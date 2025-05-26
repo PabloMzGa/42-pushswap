@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pushswap.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:10:32 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/23 13:46:43 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/26 21:20:40 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,10 @@
 
 # include "libft.h"
 
+////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////// STRUCTS ////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 typedef struct s_bidirectional_list
 {
 	int							value;
@@ -74,12 +77,14 @@ typedef struct s_cost_info
  * - If counter is zero or positive: performs a rotation and decrements counter
  *
  * @param stack Pointer to stack A structure
+ * @param cost Pointer to the cost struct.
  * @param counter Pointer to counter that tracks rotation operations
  *
  * @note The NULL parameter in rotation calls indicates that output is
  *       suppressed
  */
-void							apply_a_rot(t_stack *stack, int *counter);
+void							apply_a_rot(t_stack *stack, t_cost *cost,
+									int *counter);
 
 /**
  * @brief Applies rotate or reverse rotate operation on stack B based on counter
@@ -90,12 +95,14 @@ void							apply_a_rot(t_stack *stack, int *counter);
  * - If counter is zero or positive: performs a rotation and decrements counter
  *
  * @param stack Pointer to stack B structure
+ * @param cost Pointer to the cost struct.
  * @param counter Pointer to counter that tracks rotation operations
  *
  * @note The NULL parameter in rotation calls indicates that output is
  *       suppressed
  */
-void							apply_b_rot(t_stack *stack, int *counter);
+void							apply_b_rot(t_stack *stack, t_cost *cost,
+									int *counter);
 
 /**
  * @brief Applies rotation to both stacks simultaneously based on movement cost
@@ -132,8 +139,8 @@ void							apply_double_rot(t_stack *stack_a,
 t_cost							*calculate_cost(t_stack *stack_a,
 									t_stack *stack_b);
 
-int								get_lowest_distance(int n, t_stack *stack_a,
-									t_stack *stack_b, int a_distance);
+int								get_lowest_distance(int n, t_stack *stack_b,
+									int a_distance);
 
 /**
  * @brief Calculates the optimized cost of moving elements between stacks.
@@ -302,7 +309,7 @@ int								is_arg_correct(int argc, char *argv[], int i,
  * @param stack A pointer to the stack to be cleaned. The stack and all
  *              its elements will be deallocated.
  */
-void	clean_stack(t_stack *stack);
+void							clean_stack(t_stack *stack);
 
 /**
  * @brief Handles errors by cleaning up the provided stacks and exiting the
@@ -315,13 +322,15 @@ void	clean_stack(t_stack *stack);
  *
  * @param stack_a Pointer to the first stack (can be NULL).
  * @param stack_b Pointer to the second stack (can be NULL).
+ * @param cost Pointer to a cost struct (can be NULL).
  *
  * If either stack_a or stack_b is not NULL, the function calls `clean_stack`
  * to free the memory associated with the stack. After cleaning up, it writes
  * "Error\n" to STDERR and terminates the program with an exit status of
  * `EXIT_FAILURE`.
  */
-void							error(t_stack *stack_a, t_stack *stack_b);
+void							error(t_stack *stack_a, t_stack *stack_b,
+									t_cost *cost);
 
 ////////////////////////////////////////////////////////////////////////////////
 /////////////////////////// INITIALIZATION /////////////////////////////////////
@@ -519,13 +528,14 @@ void							swap(t_stack *stack_a, t_stack *stack_b);
  *
  * @param stack_a Pointer to the first stack (stack_a).
  * @param stack_b Pointer to the second stack (stack_b).
+ * @param cost Pointer to the cost struct.
  * @param dir A character indicating the direction of the push ('a' or 'b').
  *
  * @note If an invalid direction is provided, the function calls the `error`
  *       function.
  */
 void							push(t_stack *stack_a, t_stack *stack_b,
-									char dir);
+									t_cost *cost, char dir);
 
 /**
  * @brief Rotates the elements of one or both stacks upwards.
@@ -538,6 +548,7 @@ void							push(t_stack *stack_a, t_stack *stack_b,
  *                performed on stack_a.
  * @param stack_b Pointer to the second stack (t_stack). If NULL, no operation
  *                is performed on stack_b.
+ * @param cost Pointer to the cost struct.
  *
  * @note If only one stack is provided (stack_a or stack_b), the function
  *       rotates that stack and writes the corresponding operation ("ra\n"
@@ -548,7 +559,8 @@ void							push(t_stack *stack_a, t_stack *stack_b,
  * @note If a stack is empty or has only one element, the function calls the
  *       `error` function to handle the error condition.
  */
-void							rotate(t_stack *stack_a, t_stack *stack_b);
+void							rotate(t_stack *stack_a, t_stack *stack_b,
+									t_cost *cost);
 
 /**
  * @brief Performs a reverse rotation operation on one or both
@@ -572,10 +584,11 @@ void							rotate(t_stack *stack_a, t_stack *stack_b);
  *                used).
  * @param stack_b Pointer to the second stack (can be NULL if only stack_a is
  *                used).
+ * @param cost Pointer to the cost struct.
  *
  */
 void							reverse_rotate(t_stack *stack_a,
-									t_stack *stack_b);
+									t_stack *stack_b, t_cost *cost);
 
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// DEBUG ////////////////////////////////////////

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 21:18:26 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/10 12:44:53 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/26 21:24:36 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,41 +88,20 @@ static void	push_b(t_stack *stack_a, t_stack *stack_b)
 	write(1, "pb\n", 3);
 }
 
-/**
- * @brief Pushes the top element from one stack to another based on the
- *        direction.
- *
- * This function transfers the top element from one stack to another.
- * The direction of the push is determined by the `dir` parameter:
- *
- * - 'a': Pushes the top element from stack_b to stack_a.
- *
- * - 'b': Pushes the top element from stack_a to stack_b.
- *
- * If the source stack is empty or its top element is NULL, the function calls
- * the `error` function to handle the error.
- *
- * @param stack_a Pointer to the first stack (stack_a).
- * @param stack_b Pointer to the second stack (stack_b).
- * @param dir A character indicating the direction of the push ('a' or 'b').
- *
- * @note If an invalid direction is provided, the function calls the `error`
- *       function.
- */
-void	push(t_stack *stack_a, t_stack *stack_b, char dir)
+void	push(t_stack *stack_a, t_stack *stack_b, t_cost *cost, char dir)
 {
 	if (dir == 'a')
 	{
 		if (stack_b->size == 0 || !stack_b->top_element)
-			error(stack_a, stack_b);
+			error(stack_a, stack_b, cost);
 		push_a(stack_a, stack_b);
 	}
 	else if (dir == 'b')
 	{
 		if (stack_a->size == 0 || !stack_a->top_element)
-			error(stack_a, stack_b);
+			error(stack_a, stack_b, cost);
 		push_b(stack_a, stack_b);
 	}
 	else
-		error(stack_a, stack_b);
+		error(stack_a, stack_b, cost);
 }

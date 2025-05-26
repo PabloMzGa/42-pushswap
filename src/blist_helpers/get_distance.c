@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_distance.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 17:06:07 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/23 13:40:31 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/26 19:43:41 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,6 @@
 
 int	get_top_distance(int index, t_stack *stack)
 {
-	/* 	if (stack->size / 2 > index)
-			return (index);
-		else
-			return (-(stack->size - index)); */
 	if (stack->size == 1)
 		return (0);
 	else if (index < stack->size / 2)

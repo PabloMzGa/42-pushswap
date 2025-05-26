@@ -3,33 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 10:09:50 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/23 13:44:34 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/26 21:09:28 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pushswap.h"
-
-/**
- * TODO: No tengo youy muy claro que el algoritmo esté funcionando.
- * Muchas veces decide pasar al Stack b números muy diferentes al que debería.
- * Genera ciertos grupos medio ordenados, pero no deja 100% listo el stack B.
- * Quizás es una forma de equilibrar entre operaciones de A a B y viceversa,
- * pero es muy posible que esté fallando en la toma de decisión del coste.
- *
- * Debería probar si es relativamente fácil hacer el llenado de B a A en orden
- * perfecto (es decir, no usando heurísticos sino forzando el siguiente
- * número) y hacer pruebas de rendimiento.
- *
- * Si se aleja mucho de lo ótpimo, habría que mirar esto
- *
- * PD: Habia un bug y siempre hacía ra y rra, nunca rb. Ahora el pseudo-orden
- * es mucho más consistente. Sigue sin ordenarlo todo el stack B al completo,
- * pero generar "chunks" de numeros ordenados, lo que puede facilitar el
- * devolverlos a A.
- */
 
 t_stack	*parse_num(int argc, char *argv[])
 {
@@ -53,7 +34,7 @@ t_stack	*parse_num(int argc, char *argv[])
 		{
 			node = create_node(value);
 			if (!node)
-				error(stack_a, NULL);
+				error(stack_a, NULL, NULL);
 			blstadd_back(&(stack_a->top_element), node);
 		}
 	}

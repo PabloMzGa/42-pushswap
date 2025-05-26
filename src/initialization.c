@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialization.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 13:28:04 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/09 21:00:49 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/26 21:17:42 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ t_stack	*initialize_b_stack(t_stack *stack_a)
 	t_stack	*stack_b;
 
 	stack_b = initialize_empty_stack();
-	push(stack_a, stack_b, 'b');
-	push(stack_a, stack_b, 'b');
+	push(stack_a, stack_b, NULL, 'b');
+	push(stack_a, stack_b, NULL, 'b');
 	return (stack_b);
 }

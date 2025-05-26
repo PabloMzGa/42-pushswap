@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   blstadd_back.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/07 21:24:26 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/09 12:20:24 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/26 21:25:23 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,5 +42,4 @@ void	blstadd_back(t_blist **lst, t_blist *new)
 		temp = temp->next;
 	temp->next = new;
 	new->previous = temp;
-
 }
