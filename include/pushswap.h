@@ -3,17 +3,12 @@
 /*                                                        :::      ::::::::   */
 /*   pushswap.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:10:32 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/26 21:20:40 by pabmart2         ###   ########.fr       */
+/*   Updated: 2025/05/27 18:22:40 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
-/**
- * TODO: Buscar una forma de limpiar los cost cuando llama a error(). Quizás
- * guardar una referencia a cost en los stacks para poder limpiarlos?
- */
 
 #ifndef PUSHSWAP_H
 
