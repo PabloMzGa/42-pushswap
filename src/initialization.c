@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   initialization.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 13:28:04 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/26 21:17:42 by pabmart2         ###   ########.fr       */
+/*   Updated: 2025/05/27 20:22:31 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,4 +49,33 @@ t_stack	*initialize_b_stack(t_stack *stack_a)
 	push(stack_a, stack_b, NULL, 'b');
 	push(stack_a, stack_b, NULL, 'b');
 	return (stack_b);
+}
+
+t_stack	*populate_a_stack(int argc, char *argv[])
+{
+	int		value;
+	int		i;
+	t_stack	*stack_a;
+	t_blist	*node;
+
+	i = 0;
+	stack_a = NULL;
+	while (i < argc)
+	{
+		value = is_arg_correct(argc, argv, i++, stack_a);
+		if (i == 1)
+		{
+			stack_a = initialize_stack(value);
+			if (!stack_a)
+				return (NULL);
+		}
+		else
+		{
+			node = create_node(value);
+			if (!node)
+				error(stack_a, NULL, NULL);
+			blstadd_back(&(stack_a->top_element), node);
+		}
+	}
+	return (stack_a->size = i, stack_a);
 }

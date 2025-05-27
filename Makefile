@@ -6,7 +6,7 @@
 #    By: pablo <pablo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/20 14:34:30 by pabmart2          #+#    #+#              #
-#    Updated: 2025/05/10 17:20:38 by pablo            ###   ########.fr        #
+#    Updated: 2025/05/27 20:11:55 by pablo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -20,7 +20,6 @@ NAME = push_swap
 SRC = \
 	src/main.c \
 	src/arg_check.c \
-	src/debug.c \
 	src/error_clean.c \
 	src/initialization.c \
 	src/algorithm/apply_mov.c \

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:10:32 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/27 18:22:40 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/27 20:20:56 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,19 @@
 /////////////////////////////// STRUCTS ////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+/**
+ * @struct s_bidirectional_list
+ * @brief A structure representing a node in a bidirectional linked list.
+ *
+ * This structure implements a node for a doubly linked list, allowing
+ * traversal in both directions through the list.
+ *
+ * @typedef t_blist
+ * @param value The integer value stored in this node.
+ * @param previous Pointer to the previous node in the list, or NULL if first
+ *                 node.
+ * @param next Pointer to the next node in the list, or NULL if last node.
+ */
 typedef struct s_bidirectional_list
 {
 	int							value;
@@ -27,6 +40,18 @@ typedef struct s_bidirectional_list
 	struct s_bidirectional_list	*next;
 }								t_blist;
 
+/**
+ * @struct s_stack
+ * @brief Structure representing a stack for the push_swap algorithm.
+ *
+ * This structure implements a stack data structure used in the push_swap
+ * sorting algorithm. It keeps track of the size of the stack and points
+ * to the top element.
+ *
+ * @param size The number of elements currently in the stack.
+ * @param top_element Pointer to the top element of the stack, implemented as a
+ *                    bidirectional list (t_blist).
+ */
 typedef struct s_stack
 {
 	int							size;
@@ -134,6 +159,21 @@ void							apply_double_rot(t_stack *stack_a,
 t_cost							*calculate_cost(t_stack *stack_a,
 									t_stack *stack_b);
 
+/**
+ * @brief Determines the most efficient distance to reach the optimal insertion
+ *        point
+ *
+ * This function finds the closest higher and lower numbers to 'n' in stack_b,
+ * calculates the distance to reach each of them, and returns the distance that
+ * would result in the most efficient operation when combined with a_distance.
+ *
+ * @param n The number from stack_a to find an insertion point for
+ * @param stack_b The destination stack to insert into
+ * @param a_distance The distance/cost to access the number in stack_a
+ *
+ * @return The optimal distance in stack_b, or INT_MAX if no valid insertion
+ *         point
+ */
 int								get_lowest_distance(int n, t_stack *stack_b,
 									int a_distance);
 
@@ -240,32 +280,23 @@ int								search_closest_low(int n, t_stack *stack);
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * @brief Checks if the given string represents a valid numeric value.
+ * @brief Combines and normalizes command line arguments into a single array
  *
- * This function verifies if the input string `num` consists of valid numeric
- * characters. It allows an optional leading '-' sign for negative numbers.
- * If the string contains any invalid characters, the function returns 1.
+ * This function takes the raw argv array and joins all arguments (starting
+ * from index 1) into a single string separated by spaces. It then splits this
+ * string by spaces to create a new, normalized array of arguments.
  *
- * @param num The string to be checked.
- * @return int Returns 0 if the string is a valid numeric value, otherwise 1.
+ * This is useful for handling cases where arguments might contain spaces or
+ * when arguments are provided both as separate elements and as space-separated
+ * values within the same element.
+ *
+ * @param argc The number of arguments in argv
+ * @param argv The array of command line arguments
+ * @return A newly allocated array of strings containing the normalized
+ *         arguments, or NULL if memory allocation fails
+ * @note The returned array must be freed by the caller, including each string
  */
-int								check_num(char *num);
-
-/**
- * @brief Checks for duplicate numbers in the given arguments.
- *
- * @param argc The total number of arguments passed to the program.
- * @param argv The array of argument strings.
- * @param : The index of the current number to check for duplicates.
- *
- * This function compares the number at index `i - 1` in the `argv` array
- * with all subsequent numbers in the array. If a duplicate is found, it
- * returns 1. Otherwise, it returns 0.
- *
- * @return 1 if a duplicate number is found, 0 otherwise.
- */
-int								check_repeated_number(int argc, char *argv[],
-									int i);
+char							**clean_argv(int argc, char *argv[]);
 
 /**
  * @brief Validates a command-line argument and converts it to an integer.
@@ -289,43 +320,6 @@ int								check_repeated_number(int argc, char *argv[],
  */
 int								is_arg_correct(int argc, char *argv[], int i,
 									t_stack *stack_a);
-
-////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////// UTILS /////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-/**
- * @brief Frees all memory associated with a stack and its elements.
- *
- * This function iterates through all the elements in the stack, freeing
- * the memory allocated for each element's content and the element itself.
- * Finally, it frees the memory allocated for the stack structure.
- *
- * @param stack A pointer to the stack to be cleaned. The stack and all
- *              its elements will be deallocated.
- */
-void							clean_stack(t_stack *stack);
-
-/**
- * @brief Handles errors by cleaning up the provided stacks and exiting the
- *        program.
- *
- * This function is used to handle errors in the program. It ensures that any
- * allocated memory for the provided stacks is properly freed before exiting
- * the program. Additionally, it writes an error message to the standard error
- * output.
- *
- * @param stack_a Pointer to the first stack (can be NULL).
- * @param stack_b Pointer to the second stack (can be NULL).
- * @param cost Pointer to a cost struct (can be NULL).
- *
- * If either stack_a or stack_b is not NULL, the function calls `clean_stack`
- * to free the memory associated with the stack. After cleaning up, it writes
- * "Error\n" to STDERR and terminates the program with an exit status of
- * `EXIT_FAILURE`.
- */
-void							error(t_stack *stack_a, t_stack *stack_b,
-									t_cost *cost);
 
 ////////////////////////////////////////////////////////////////////////////////
 /////////////////////////// INITIALIZATION /////////////////////////////////////
@@ -366,6 +360,27 @@ t_stack							*initialize_b_stack(t_stack *stack_a);
  * fails.
  */
 t_stack							*initialize_stack(int top_value);
+
+/**
+ * @brief Populates stack A with values from command-line arguments
+ *
+ * This function takes command-line arguments, validates them as integers,
+ * and constructs a stack data structure with these values. The first valid
+ * argument initializes the stack, and subsequent arguments are added as nodes
+ * to the stack.
+ *
+ * @param argc The count of command-line arguments
+ * @param argv Array of command-line argument strings
+ *
+ * @return Pointer to the populated stack, or NULL if memory allocation fails
+ *
+ * @note The function checks if arguments are valid using is_arg_correct()
+ * @note Memory error handling is implemented - if allocation fails, the
+ *       function calls error() which frees allocated memory and exits the
+ *       program.
+ * @note The stack size is set to (argc-1) before returning
+ */
+t_stack							*populate_a_stack(int argc, char *argv[]);
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////// LIST HELPERS //////////////////////////////////////
@@ -586,10 +601,40 @@ void							reverse_rotate(t_stack *stack_a,
 									t_stack *stack_b, t_cost *cost);
 
 ////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////// DEBUG ////////////////////////////////////////
+//////////////////////////////// UTILS /////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-void							print_stack(t_stack *stack, char stackname);
+/**
+ * @brief Frees all memory associated with a stack and its elements.
+ *
+ * This function iterates through all the elements in the stack, freeing
+ * the memory allocated for each element's content and the element itself.
+ * Finally, it frees the memory allocated for the stack structure.
+ *
+ * @param stack A pointer to the stack to be cleaned. The stack and all
+ *              its elements will be deallocated.
+ */
+void							clean_stack(t_stack *stack);
 
-void							print_cost(t_cost *cost, t_stack *stack_a);
+/**
+ * @brief Handles errors by cleaning up the provided stacks and exiting the
+ *        program.
+ *
+ * This function is used to handle errors in the program. It ensures that any
+ * allocated memory for the provided stacks is properly freed before exiting
+ * the program. Additionally, it writes an error message to the standard error
+ * output.
+ *
+ * @param stack_a Pointer to the first stack (can be NULL).
+ * @param stack_b Pointer to the second stack (can be NULL).
+ * @param cost Pointer to a cost struct (can be NULL).
+ *
+ * If either stack_a or stack_b is not NULL, the function calls `clean_stack`
+ * to free the memory associated with the stack. After cleaning up, it writes
+ * "Error\n" to STDERR and terminates the program with an exit status of
+ * `EXIT_FAILURE`.
+ */
+void							error(t_stack *stack_a, t_stack *stack_b,
+									t_cost *cost);
+
 #endif

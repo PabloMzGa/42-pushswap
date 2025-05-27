@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cost.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:57:56 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/26 21:24:52 by pabmart2         ###   ########.fr       */
+/*   Updated: 2025/05/27 20:09:30 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,20 @@ static t_cost	*initialize_cost(t_stack *stack_a, t_stack *stack_b)
 	return (cost);
 }
 
+/**
+ * @brief Compares a new cost with the current minimum cost and updates if lower
+ *
+ * This function checks if the provided temporary cost is lower than the current
+ * total cost stored in the cost structure. If it is, it updates the cost
+ * structure with the new values, including the total cost, candidate index, and
+ * the number of movements required for both stack A and stack B.
+ *
+ * @param cost Pointer to a pointer to the cost structure to potentially update
+ * @param tmp_cost New cost to compare with the current minimum
+ * @param index Index of the element associated with the new cost
+ * @param ab_dist Array containing the required movements for stack A [0] and
+ *                B [1]
+ */
 static void	compare_cost(t_cost **cost, int tmp_cost, int index, int ab_dist[])
 {
 	if (tmp_cost < (*cost)->total_cost)

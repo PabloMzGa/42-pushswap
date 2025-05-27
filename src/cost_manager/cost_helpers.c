@@ -3,25 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   cost_helpers.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:57:56 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/26 20:10:41 by pabmart2         ###   ########.fr       */
+/*   Updated: 2025/05/27 20:04:57 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pushswap.h"
 
 /**
- * @brief Calculates the distance of a candidate in the stack or returns
- *        the maximum integer value if the candidate is zero.
+ * @brief Calculates the distance for a given low candidate in the stack
  *
- * @param candidate The index or position of the candidate in the stack.
- *                   If this value is -1, the function will return INT_MAX.
- * @param stack A pointer to the stack structure where the candidate resides.
+ * This function determines the distance from the candidate to the bottom of
+ * the stack. If the candidate is invalid (-1), it returns INT_MAX to indicate
+ * an infinite or maximum distance.
  *
- * @return The distance of the candidate in the stack as calculated by
- *         get_distance(), or INT_MAX if the candidate is 0.
+ * @param candidate The index or position to calculate distance for
+ * @param stack Pointer to the stack structure
+ * @return The horizontal distance to the bottom, or INT_MAX if candidate is -1.
+ *         A negative distance means the rotation needs to be in reverse.
  */
 static int	set_ldistance(int candidate, t_stack *stack)
 {
@@ -31,6 +32,18 @@ static int	set_ldistance(int candidate, t_stack *stack)
 		return (INT_MAX);
 }
 
+/**
+ * @brief Calculates the distance for a given high candidate in the stack
+ *
+ * This function determines the distance from the candidate to the bottom of
+ * the stack. If the candidate is invalid (-1), it returns INT_MAX to indicate
+ * an infinite or maximum distance.
+ *
+ * @param candidate The index or position to calculate distance for
+ * @param stack Pointer to the stack structure
+ * @return The horizontal distance to the bottom, or INT_MAX if candidate is -1.
+ *         A negative distance means the rotation needs to be in reverse.
+ */
 static int	set_hdistance(int candidate, t_stack *stack)
 {
 	if (candidate != -1)
@@ -39,8 +52,7 @@ static int	set_hdistance(int candidate, t_stack *stack)
 		return (INT_MAX);
 }
 
-int	get_lowest_distance(int n, t_stack *stack_b,
-		int a_distance)
+int	get_lowest_distance(int n, t_stack *stack_b, int a_distance)
 {
 	int	h_distance;
 	int	l_distance;
