@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:10:32 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/27 20:20:56 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/28 13:38:38 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ typedef struct s_stack
  *                   sum of movements in both stacks.
  * @param candidate_index Index of the element in stack A involved in the
  *                        operation.
- */
+ **/
 typedef struct s_cost_info
 {
 	int							stack_a_mov;
@@ -157,7 +157,7 @@ void							apply_double_rot(t_stack *stack_a,
  * @return A pointer to a t_cost structure containing the calculated costs.
  */
 t_cost							*calculate_cost(t_stack *stack_a,
-									t_stack *stack_b);
+									t_stack *stack_b, int current_chunk);
 
 /**
  * @brief Determines the most efficient distance to reach the optimal insertion
@@ -257,6 +257,7 @@ void							push_b_algo(t_stack *stack_a, t_stack *stack_b);
  */
 int								search_closest_high(int n, t_stack *stack);
 
+
 /**
  * @brief Searches for the closest lower value than the given number in the
  *        stack.
@@ -274,6 +275,7 @@ int								search_closest_high(int n, t_stack *stack);
  *         compared to `n`. If no such element exists, the function returns -1.
  */
 int								search_closest_low(int n, t_stack *stack);
+
 
 ////////////////////////////////////////////////////////////////////////////////
 /////////////////////////// ARGUMENTS CHECK ////////////////////////////////////
@@ -637,4 +639,11 @@ void							clean_stack(t_stack *stack);
 void							error(t_stack *stack_a, t_stack *stack_b,
 									t_cost *cost);
 
+////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////// DEBUG ////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+void							print_stack(t_stack *stack, char stackname);
+
+void							print_cost(t_cost *cost, t_stack *stack_a);
 #endif

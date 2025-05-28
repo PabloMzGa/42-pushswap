@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 13:39:06 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/10 12:42:53 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/28 13:24:26 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,3 +63,4 @@ int	search_closest_low(int n, t_stack *stack)
 		return (-1);
 	return (selected_index);
 }
+

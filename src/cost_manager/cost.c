@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:57:56 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/27 20:09:30 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/28 17:54:43 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,8 @@ static t_cost	*initialize_cost(t_stack *stack_a, t_stack *stack_b)
 	if (!cost)
 		error(stack_a, stack_b, NULL);
 	cost->total_cost = INT_MAX;
+	cost->stack_a_mov = INT_MAX / 2;
+	cost->stack_b_mov = INT_MAX / 2;
 	return (cost);
 }
 
@@ -52,7 +54,7 @@ static t_cost	*initialize_cost(t_stack *stack_a, t_stack *stack_b)
  */
 static void	compare_cost(t_cost **cost, int tmp_cost, int index, int ab_dist[])
 {
-	if (tmp_cost < (*cost)->total_cost)
+	if (tmp_cost <= (*cost)->total_cost)
 	{
 		(*cost)->total_cost = tmp_cost;
 		(*cost)->candidate_index = index;
@@ -61,25 +63,48 @@ static void	compare_cost(t_cost **cost, int tmp_cost, int index, int ab_dist[])
 	}
 }
 
-t_cost	*calculate_cost(t_stack *stack_a, t_stack *stack_b)
+/* int	is_inside_chunk(int value, int current_chunk)
+{
+	if (current_chunk == 0 && value >= 0 && value < 100)
+		return (1);
+	else if (current_chunk == 1 && value >= 100 && value < 200)
+		return (1);
+	else if (current_chunk == 2 && value >= 200 && value < 300)
+		return (1);
+	else if (current_chunk == 3 && value >= 300 && value < 400)
+		return (1);
+	else if (current_chunk == 4 && value >= 400 && value < 501)
+		return (1);
+	else
+		return (0);
+} */
+
+t_cost	*calculate_cost(t_stack *stack_a, t_stack *stack_b, int current_chunk)
 {
 	t_cost	*cost;
 	int		index;
 	int		ab_dist[2];
 	int		tmp_cost;
+	int		value;
 
+	(void)current_chunk;
 	cost = initialize_cost(stack_a, stack_b);
 	index = 0;
 	while (index < stack_a->size)
 	{
+		value = get_node_from_index(index, stack_a->top_element)->value;
+/* 		if (!is_inside_chunk(value, current_chunk))
+		{
+			++index;
+			continue ;
+		} */
 		ab_dist[0] = get_top_distance(index, stack_a);
-		ab_dist[1] = get_lowest_distance(get_node_from_index(index,
-					stack_a->top_element)->value, stack_b, ab_dist[0]);
+		ab_dist[1] = get_lowest_distance(value, stack_b, ab_dist[0]);
 		if (ab_dist[1] == INT_MAX)
 			return (ft_free((void **)&cost), NULL);
 		tmp_cost = get_optimized_cost(ab_dist[0], ab_dist[1]);
+		compare_cost(&cost, tmp_cost, index, ab_dist);
 		++index;
 	}
-	compare_cost(&cost, tmp_cost, index, ab_dist);
 	return (cost);
 }

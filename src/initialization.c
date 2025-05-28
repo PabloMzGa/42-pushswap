@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 13:28:04 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/27 20:22:31 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/28 17:52:34 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ t_stack	*populate_a_stack(int argc, char *argv[])
 	t_stack	*stack_a;
 	t_blist	*node;
 
+	if (argc < 2)
+		error(NULL,NULL,NULL);
 	i = 0;
 	stack_a = NULL;
 	while (i < argc)
