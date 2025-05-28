@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 01:54:05 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/28 17:54:27 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/28 21:54:49 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,25 +30,14 @@ void	push_b_algo(t_stack *stack_a, t_stack *stack_b)
 {
 	t_cost	*cost;
 	int		i;
-	int		current_chunk;
 
 	i = 0;
-	current_chunk = 0;
 	while (stack_a->size > 0)
 	{
-/* 		if (current_chunk == 0 && !is_inside_range(stack_a, 0, 100))
-			++current_chunk;
-		else if (current_chunk == 1 && !is_inside_range(stack_a, 100, 200))
-			++current_chunk;
-		else if (current_chunk == 2 && !is_inside_range(stack_a, 200, 300))
-			++current_chunk;
-		else if (current_chunk == 3 && !is_inside_range(stack_a, 300, 400))
-			++current_chunk;
-		else if (current_chunk == 4 && !is_inside_range(stack_a, 400, 501))
-			++current_chunk; */
+
 		// print_stack(stack_a, 'a');
 		// print_stack(stack_b, 'b');
-		cost = calculate_cost(stack_a, stack_b, current_chunk);
+		cost = calculate_cost(stack_a, stack_b);
 		// print_cost(cost, stack_a);
 		if (!cost)
 			error(stack_a, stack_b, NULL);

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:10:32 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/28 13:38:38 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/28 22:05:50 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -157,7 +157,7 @@ void							apply_double_rot(t_stack *stack_a,
  * @return A pointer to a t_cost structure containing the calculated costs.
  */
 t_cost							*calculate_cost(t_stack *stack_a,
-									t_stack *stack_b, int current_chunk);
+									t_stack *stack_b);
 
 /**
  * @brief Determines the most efficient distance to reach the optimal insertion
