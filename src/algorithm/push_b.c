@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 01:54:05 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/28 21:54:49 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/02 19:52:41 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	push_b_algo(t_stack *stack_a, t_stack *stack_b)
 	int		i;
 
 	i = 0;
-	while (stack_a->size > 3)
+	while (stack_a->size > 0)
 	{
 
 		// print_stack(stack_a, 'a');
