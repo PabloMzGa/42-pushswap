@@ -32,7 +32,7 @@ void	push_b_algo(t_stack *stack_a, t_stack *stack_b)
 	int		i;
 
 	i = 0;
-	while (stack_a->size > 0)
+	while (stack_a->size > 3)
 	{
 
 		// print_stack(stack_a, 'a');

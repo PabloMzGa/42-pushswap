@@ -1,12 +1,21 @@
 /* ************************************************************************** */
-/*                                                                            */
+/*                                                 	while (index < stack_a->size)
+	{
+		value = get_node_from_index(index, stack_a->top_element)->value;
+		tmp_cost = get_optimized_a_distance(index, value, stack_a, stack_b,
+				ab_dist);
+		if (tmp_cost == INT_MAX)
+			return (ft_free((void **)&cost), NULL);
+		compare_cost(&cost, tmp_cost, index, ab_dist);
+		++index;
+	}                */
 /*                                                        :::      ::::::::   */
 /*   cost.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:57:56 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/28 22:05:34 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/02 18:35:16 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,24 +72,67 @@ static void	compare_cost(t_cost **cost, int tmp_cost, int index, int ab_dist[])
 	}
 }
 
+static int	set_optimized_distance(int a_dist[], int b_dist[], int cost[],
+		int ab_dist[])
+{
+	if (b_dist[0] == INT_MAX && b_dist[1] == INT_MAX)
+		return (INT_MAX);
+	if (b_dist[0] != INT_MAX)
+		cost[0] = get_optimized_cost(a_dist[0], b_dist[0]);
+	else
+		cost[0] = INT_MAX;
+	if (b_dist[1] != INT_MAX)
+		cost[1] = get_optimized_cost(a_dist[1], b_dist[1]);
+	else
+		cost[1] = INT_MAX;
+	if (cost[0] <= cost[1])
+	{
+		ab_dist[0] = a_dist[0];
+		ab_dist[1] = b_dist[0];
+		return (cost[0]);
+	}
+	else
+	{
+		ab_dist[0] = a_dist[1];
+		ab_dist[1] = b_dist[1];
+		return (cost[1]);
+	}
+}
+
+
+static int	get_optimized_a_distance(int index, t_stack *stack_a,
+		t_stack *stack_b, int ab_dist[])
+{
+	int	value;
+
+	int a_dist[2]; // [0]=normal, [1]=reverse
+	int b_dist[2]; // [0]=normal, [1]=reverse
+	int cost[2];   // [0]=normal, [1]=reverse
+	value = get_node_from_index(index, stack_a->top_element)->value;
+	a_dist[0] = get_top_distance(index, stack_a);
+	if (a_dist[0] >= 0)
+		a_dist[1] = -(stack_a->size - index);
+	else
+		a_dist[1] = index;
+	b_dist[0] = get_lowest_distance(value, stack_b, a_dist[0]);
+	b_dist[1] = get_lowest_distance(value, stack_b, a_dist[1]);
+	return (set_optimized_distance(a_dist, b_dist, cost, ab_dist));
+}
+
 t_cost	*calculate_cost(t_stack *stack_a, t_stack *stack_b)
 {
 	t_cost	*cost;
 	int		index;
 	int		ab_dist[2];
 	int		tmp_cost;
-	int		value;
 
 	cost = initialize_cost(stack_a, stack_b);
 	index = 0;
 	while (index < stack_a->size)
 	{
-		value = get_node_from_index(index, stack_a->top_element)->value;
-		ab_dist[0] = get_top_distance(index, stack_a);
-		ab_dist[1] = get_lowest_distance(value, stack_b, ab_dist[0]);
-		if (ab_dist[1] == INT_MAX)
+		tmp_cost = get_optimized_a_distance(index, stack_a, stack_b, ab_dist);
+		if (tmp_cost == INT_MAX)
 			return (ft_free((void **)&cost), NULL);
-		tmp_cost = get_optimized_cost(ab_dist[0], ab_dist[1]);
 		compare_cost(&cost, tmp_cost, index, ab_dist);
 		++index;
 	}
