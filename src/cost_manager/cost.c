@@ -29,18 +29,18 @@
  * (INT_MAX). If memory allocation fails, the function calls the error handler
  * and terminates the program.
  *
- * @param stack_a Pointer to the first stack (used for error handling).
- * @param stack_b Pointer to the second stack (used for error handling).
+ * @param source_stack Pointer to the source stack (used for error handling).
+ * @param dest_stack Pointer to the destination stack (used for error handling).
  *
  * @return A pointer to the newly allocated and initialized t_cost structure.
  */
-static t_cost	*initialize_cost(t_stack *stack_a, t_stack *stack_b)
+static t_cost	*initialize_cost(t_stack *source_stack, t_stack *dest_stack)
 {
 	t_cost	*cost;
 
 	cost = malloc(sizeof(t_cost));
 	if (!cost)
-		error(stack_a, stack_b, NULL);
+		error(source_stack, dest_stack, NULL);
 	cost->total_cost = INT_MAX;
 	cost->stack_a_mov = INT_MAX / 2;
 	cost->stack_b_mov = INT_MAX / 2;
@@ -99,41 +99,51 @@ static int	set_optimized_distance(int a_dist[], int b_dist[], int cost[],
 	}
 }
 
-
-static int	get_optimized_a_distance(int index, t_stack *stack_a,
-		t_stack *stack_b, int ab_dist[])
+static int	get_optimized_source_distance(int index, t_stack *source_stack,
+		t_stack *dest_stack, int source_dest_dist[])
 {
 	int	value;
 
-	int a_dist[2]; // [0]=normal, [1]=reverse
-	int b_dist[2]; // [0]=normal, [1]=reverse
-	int cost[2];   // [0]=normal, [1]=reverse
-	value = get_node_from_index(index, stack_a->top_element)->value;
-	a_dist[0] = get_top_distance(index, stack_a);
-	if (a_dist[0] >= 0)
-		a_dist[1] = -(stack_a->size - index);
+	int source_dist[2]; // [0]=normal, [1]=reverse
+	int dest_dist[2];   // [0]=normal, [1]=reverse
+	int cost[2];        // [0]=normal, [1]=reverse
+	value = get_node_from_index(index, source_stack->top_element)->value;
+	source_dist[0] = get_top_distance(index, source_stack);
+	if (source_dist[0] >= 0)
+		source_dist[1] = -(source_stack->size - index);
 	else
-		a_dist[1] = index;
-	b_dist[0] = get_lowest_distance(value, stack_b, a_dist[0]);
-	b_dist[1] = get_lowest_distance(value, stack_b, a_dist[1]);
-	return (set_optimized_distance(a_dist, b_dist, cost, ab_dist));
+		source_dist[1] = index;
+	dest_dist[0] = get_lowest_distance(value, dest_stack, source_dist[0]);
+	dest_dist[1] = get_lowest_distance(value, dest_stack, source_dist[1]);
+	return (set_optimized_distance(source_dist, dest_dist, cost,
+			source_dest_dist));
 }
 
-t_cost	*calculate_cost(t_stack *stack_a, t_stack *stack_b)
+t_cost	*calculate_cost(t_stack *source_stack, t_stack *dest_stack,
+		int use_skip_optimization)
 {
 	t_cost	*cost;
 	int		index;
-	int		ab_dist[2];
+	int		source_dest_dist[2];
 	int		tmp_cost;
 
-	cost = initialize_cost(stack_a, stack_b);
+	cost = NULL;
 	index = 0;
-	while (index < stack_a->size)
+	while (index < source_stack->size)
 	{
-		tmp_cost = get_optimized_a_distance(index, stack_a, stack_b, ab_dist);
+		if (use_skip_optimization && should_skip_element(index, source_stack,
+				dest_stack))
+		{
+			++index;
+			continue ;
+		}
+		if (!cost)
+			cost = initialize_cost(source_stack, dest_stack);
+		tmp_cost = get_optimized_source_distance(index, source_stack,
+				dest_stack, source_dest_dist);
 		if (tmp_cost == INT_MAX)
 			return (ft_free((void **)&cost), NULL);
-		compare_cost(&cost, tmp_cost, index, ab_dist);
+		compare_cost(&cost, tmp_cost, index, source_dest_dist);
 		++index;
 	}
 	return (cost);

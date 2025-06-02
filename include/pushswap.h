@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:10:32 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/28 22:05:50 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/02 20:57:36 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,19 +145,20 @@ void							apply_double_rot(t_stack *stack_a,
 									t_stack *stack_b, t_cost *cost);
 
 /**
- * @brief Calculates the cost of moving elements between two stacks.
+ * @brief Calculates the cost of moving elements between two stacks (universal).
  *
  * This function computes the cost associated with moving elements
- * from stack_b to stack_a. It initializes a cost structure, determines
+ * from source_stack to dest_stack. It initializes a cost structure, determines
  * the optimal positions for elements in both stacks, and calculates
  * the distances required for the operations.
  *
- * @param stack_a Pointer to the first stack (stack_a).
- * @param stack_b Pointer to the second stack (stack_b).
+ * @param source_stack Pointer to the source stack (where elements are taken from).
+ * @param dest_stack Pointer to the destination stack (where elements are inserted).
+ * @param use_skip_optimization 1 to skip well-positioned elements, 0 to process all.
  * @return A pointer to a t_cost structure containing the calculated costs.
  */
-t_cost							*calculate_cost(t_stack *stack_a,
-									t_stack *stack_b);
+t_cost							*calculate_cost(t_stack *source_stack,
+									t_stack *dest_stack, int use_skip_optimization);
 
 /**
  * @brief Determines the most efficient distance to reach the optimal insertion
@@ -202,6 +203,21 @@ int								get_lowest_distance(int n, t_stack *stack_b,
  * @return The optimized cost of the movements.
  */
 int								get_optimized_cost(int a_mov, int b_mov);
+
+/**
+ * @brief Checks if an element should be skipped during push_b phase
+ *
+ * This function determines if an element at the given index should be
+ * skipped (not pushed to stack_b) because it's already well positioned
+ * in a subsequence, considering elements in both stacks.
+ *
+ * @param index Index of the element to check in stack_a
+ * @param stack_a Pointer to stack A containing the element
+ * @param stack_b Pointer to stack B (may contain related elements)
+ * @return 1 if element should be skipped, 0 if it should be processed
+ */
+int								should_skip_element(int index, t_stack *stack_a,
+									t_stack *stack_b);
 
 /**
  * @brief Moves all elements from stack_b to stack_a in descending order
@@ -257,6 +273,22 @@ void							push_b_algo(t_stack *stack_a, t_stack *stack_b);
  */
 int								search_closest_high(int n, t_stack *stack);
 
+/**
+ * @brief Finds the smallest value that is greater than the given value
+ *        across both stacks.
+ *
+ * This function searches both stack_a and stack_b for values that are greater
+ * than the provided value. It then returns the smallest of these higher values.
+ * If no higher values are found in either stack, INT_MAX is returned.
+ *
+ * @param value The reference value to compare against
+ * @param stack_a Pointer to the first stack
+ * @param stack_b Pointer to the second stack
+ * @return The smallest value greater than the given value found in either
+ *         stack, or INT_MAX if no such value exists
+ */
+int								search_closest_high_global(int value,
+									t_stack *stack_a, t_stack *stack_b);
 
 /**
  * @brief Searches for the closest lower value than the given number in the
@@ -276,6 +308,22 @@ int								search_closest_high(int n, t_stack *stack);
  */
 int								search_closest_low(int n, t_stack *stack);
 
+/**
+ * @brief Finds the biggest value that is lower than the given value
+ *        across both stacks.
+ *
+ * This function searches both stack_a and stack_b for values that are lower
+ * than the provided value. It then returns the biggest of these lower values.
+ * If no lower values are found in either stack, INT_MAX is returned.
+ *
+ * @param value The reference value to compare against
+ * @param stack_a Pointer to the first stack
+ * @param stack_b Pointer to the second stack
+ * @return The smallest value greater than the given value found in either
+ *         stack, or INT_MAX if no such value exists
+ */
+int								search_closest_low_global(int value,
+									t_stack *stack_a, t_stack *stack_b);
 
 ////////////////////////////////////////////////////////////////////////////////
 /////////////////////////// ARGUMENTS CHECK ////////////////////////////////////
@@ -444,6 +492,19 @@ t_blist							*create_node(int n);
  *         empty
  */
 int								get_highest_node(t_blist *lst);
+
+/**
+ * @brief Find the index of the node with the lowest value in a linked list
+ *
+ * This function traverses the given linked list and identifies the node
+ * containing the lowest value. It returns the index (position) of this node
+ * in the list, with the first node being at index 0.
+ *
+ * @param lst Pointer to the first node of the linked list to search
+ * @return The index of the node with the lowest value, or -1 if the list is
+ *         empty
+ */
+int								get_lowest_node(t_blist *lst);
 
 /**
  * @brief Retrieves the last node in a linked list.

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 13:39:06 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/28 13:24:26 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/02 20:58:24 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,3 +64,54 @@ int	search_closest_low(int n, t_stack *stack)
 	return (selected_index);
 }
 
+int	search_closest_high_global(int value, t_stack *stack_a, t_stack *stack_b)
+{
+	int		closest_high_a;
+	int		closest_high_b;
+	int		target_high_value;
+	t_blist	*closest_node;
+
+	closest_high_a = search_closest_high(value, stack_a);
+	closest_high_b = search_closest_high(value, stack_b);
+	target_high_value = INT_MAX;
+	if (closest_high_a != -1)
+	{
+		closest_node = get_node_from_index(closest_high_a,
+				stack_a->top_element);
+		if (closest_node && closest_node->value < target_high_value)
+			target_high_value = closest_node->value;
+	}
+	if (closest_high_b != -1)
+	{
+		closest_node = get_node_from_index(closest_high_b,
+				stack_b->top_element);
+		if (closest_node && closest_node->value < target_high_value)
+			target_high_value = closest_node->value;
+	}
+	return (target_high_value);
+}
+
+int	search_closest_low_global(int value, t_stack *stack_a, t_stack *stack_b)
+{
+	int		closest_low_a;
+	int		closest_low_b;
+	int		target_low_value;
+	t_blist	*closest_node;
+
+	closest_low_a = search_closest_low(value, stack_a);
+	closest_low_b = search_closest_low(value, stack_b);
+	target_low_value = INT_MIN;
+	if (closest_low_a != -1)
+	{
+		closest_node = get_node_from_index(closest_low_a, stack_a->top_element);
+		if (closest_node && closest_node->value > target_low_value)
+			target_low_value = closest_node->value;
+	}
+	if (closest_low_b != -1)
+	{
+		closest_node = get_node_from_index(closest_low_b, stack_b->top_element);
+		if (closest_node && closest_node->value > target_low_value)
+			target_low_value = closest_node->value;
+	}
+	return (target_low_value);
+}

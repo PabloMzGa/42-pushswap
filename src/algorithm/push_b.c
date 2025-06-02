@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 01:54:05 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/02 19:52:41 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/02 20:56:53 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,10 @@ void	push_b_algo(t_stack *stack_a, t_stack *stack_b)
 
 		// print_stack(stack_a, 'a');
 		// print_stack(stack_b, 'b');
-		cost = calculate_cost(stack_a, stack_b);
+		cost = calculate_cost(stack_a, stack_b, 1);
 		// print_cost(cost, stack_a);
 		if (!cost)
-			error(stack_a, stack_b, NULL);
+			break;
 		while (cost->stack_a_mov || cost->stack_b_mov)
 		{
 			if (cost->stack_a_mov > 0 && cost->stack_b_mov > 0)
