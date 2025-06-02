@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 17:47:52 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/27 20:27:34 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/02 13:47:41 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,9 @@ int	is_arg_correct(int argc, char *argv[], int i, t_stack *stack_a)
 {
 	long	tmp;
 
-	if (check_num(argv[i]) || check_repeated_number(argc, argv, i + 1))
+	if (check_num(argv[i]))
+		error(stack_a, NULL, NULL);
+	else if (check_repeated_number(argc, argv, i + 1))
 		error(stack_a, NULL, NULL);
 	tmp = ft_atol(argv[i]);
 	if (tmp > INT_MAX || tmp < INT_MIN)

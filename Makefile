@@ -6,7 +6,7 @@
 #    By: pablo <pablo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/20 14:34:30 by pabmart2          #+#    #+#              #
-#    Updated: 2025/05/27 20:11:55 by pablo            ###   ########.fr        #
+#    Updated: 2025/05/29 21:37:02 by pablo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -32,6 +32,7 @@ SRC = \
 	src/blist_helpers/get_distance.c \
 	src/blist_helpers/get_highest_node.c \
 	src/blist_helpers/get_last_node.c \
+	src/blist_helpers/get_lowest_node.c \
 	src/blist_helpers/get_node_from_index.c \
 	src/cost_manager/cost_helpers.c \
 	src/cost_manager/cost.c \

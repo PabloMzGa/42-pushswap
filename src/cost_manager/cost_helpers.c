@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:57:56 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/28 22:06:09 by pablo            ###   ########.fr       */
+/*   Updated: 2025/05/29 21:23:08 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 static int	set_ldistance(int candidate, t_stack *stack)
 {
 	if (candidate != -1)
-		return (get_top_distance(candidate, stack));
+		return (get_bottom_distance(candidate, stack));
 	else
 		return (INT_MAX);
 }
@@ -35,19 +35,19 @@ static int	set_ldistance(int candidate, t_stack *stack)
 /**
  * @brief Calculates the distance for a given high candidate in the stack
  *
- * This function determines the distance from the candidate to the bottom of
+ * This function determines the distance from the candidate to the top of
  * the stack. If the candidate is invalid (-1), it returns INT_MAX to indicate
  * an infinite or maximum distance.
  *
  * @param candidate The index or position to calculate distance for
  * @param stack Pointer to the stack structure
- * @return The horizontal distance to the bottom, or INT_MAX if candidate is -1.
+ * @return The horizontal distance to the top, or INT_MAX if candidate is -1.
  *         A negative distance means the rotation needs to be in reverse.
  */
 static int	set_hdistance(int candidate, t_stack *stack)
 {
 	if (candidate != -1)
-		return (get_bottom_distance(candidate, stack));
+		return (get_top_distance(candidate, stack));
 	else
 		return (INT_MAX);
 }

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 11:45:55 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/10 17:21:14 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/02 14:28:36 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ void	print_cost(t_cost *cost, t_stack *stack_a)
 		printf("Candidate value: %d\n", candidate_node->value);
 	else
 		printf("Candidate value: N/A (node not found)\n");
-	printf("Stack A movements: %d\n", cost->stack_a_mov);
-	printf("Stack B movements: %d\n", cost->stack_b_mov);
+	printf("Stack de origen movements: %d\n", cost->src_stack_mov);
+	printf("Stack de destino movements: %d\n", cost->dst_stack_mov);
 	printf("================================\n\n");
 }
 
