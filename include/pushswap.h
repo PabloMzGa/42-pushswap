@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:10:32 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/04 12:33:25 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/04 13:42:09 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,6 +243,19 @@ void							push_a_algo(t_stack *stack_a, t_stack *stack_b);
  * @param stack_b Pointer to the destination stack
  */
 void							push_b_algo(t_stack *stack_a, t_stack *stack_b);
+
+/**
+ * @brief Performs pre-processing optimization using swap operations
+ *
+ * This function attempts to optimize the initial state of stack A by
+ * strategically using swap operations to bring cheaper-to-move elements
+ * to the top of the stack. This can significantly reduce the total number
+ * of operations needed for large datasets.
+ *
+ * @param stack_a Pointer to stack A
+ * @param stack_b Pointer to stack B (initially empty)
+ */
+void							preprocess_with_swap(t_stack *stack_a, t_stack *stack_b);
 
 /**
  * @brief Searches for the closest higher value than the given number in the
