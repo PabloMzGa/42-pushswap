@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 01:54:05 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/04 11:43:07 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/04 12:31:45 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,18 +26,46 @@ int	is_inside_range(t_stack *stack, int min, int max)
 	return (0);
 }
 
+/**
+ * @brief Checks if a stack is sorted in ascending order (from top to bottom)
+ *
+ * This function traverses a stack from top to bottom and verifies that each
+ * element is less than the next element, ensuring the stack is
+ * sorted in ascending order.
+ *
+ * @param stack Pointer to the stack structure to check
+ * @return 1 if the stack is sorted in ascending order, 0 otherwise
+ */
+static int	is_stack_sorted(t_stack *stack)
+{
+	t_blist	*current;
+
+	if (!stack || !stack->top_element)
+		return (1);
+	if (stack->size < 1)
+		return (1);
+	current = stack->top_element;
+	while (current && current->next)
+	{
+		if (current->value > current->next->value)
+			return (0);
+		current = current->next;
+	}
+	return (1);
+}
+
 void	push_b_algo(t_stack *stack_a, t_stack *stack_b)
 {
 	t_cost	*cost;
 	int		i;
 
 	i = 0;
-	while (stack_a->size > 1)
+	while (stack_a->size > 1 && !is_stack_sorted(stack_a))
 	{
 
 /* 		 print_stack(stack_a, 'a');
 		 print_stack(stack_b, 'b'); */
-		cost = calculate_cost(stack_a, stack_b, 0);
+		cost = calculate_cost(stack_a, stack_b);
 /* 		 print_cost(cost, stack_a); */
 		if (!cost)
 			break;

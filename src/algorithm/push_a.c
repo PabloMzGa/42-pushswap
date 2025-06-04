@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 12:01:39 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/04 11:15:36 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/04 12:22:59 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ void	push_a_algo(t_stack *stack_a, t_stack *stack_b)
 		print_stack(stack_a, 'A');
 		print_stack(stack_b, 'B');
 		ft_printf("\n ======================= \n"); */
-		cost = calculate_cost(stack_b, stack_a, 0);
+		cost = calculate_cost(stack_b, stack_a);
 /* 		print_cost(cost, stack_b); */
 		if (!cost)
 		break;

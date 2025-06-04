@@ -119,8 +119,7 @@ static int	get_optimized_source_distance(int index, t_stack *source_stack,
 			source_dest_dist));
 }
 
-t_cost	*calculate_cost(t_stack *source_stack, t_stack *dest_stack,
-		int use_skip_optimization)
+t_cost	*calculate_cost(t_stack *source_stack, t_stack *dest_stack)
 {
 	t_cost	*cost;
 	int		index;
@@ -131,12 +130,6 @@ t_cost	*calculate_cost(t_stack *source_stack, t_stack *dest_stack,
 	index = 0;
 	while (index < source_stack->size)
 	{
-		if (use_skip_optimization && should_skip_element(index, source_stack,
-				dest_stack))
-		{
-			++index;
-			continue ;
-		}
 		if (!cost)
 			cost = initialize_cost(source_stack, dest_stack);
 		tmp_cost = get_optimized_source_distance(index, source_stack,

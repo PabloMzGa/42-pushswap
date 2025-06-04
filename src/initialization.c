@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 13:28:04 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/02 22:56:26 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/04 12:34:14 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,5 @@ t_stack	*populate_a_stack(int argc, char *argv[])
 		}
 	}
 	stack_a->size = i;
-	build_expected_order_links(stack_a);
 	return (stack_a);
 }

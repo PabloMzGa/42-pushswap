@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:10:32 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/04 11:48:39 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/04 12:33:25 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,18 +34,12 @@
  * @param previous Pointer to the previous node in the list, or NULL if first
  *                 node.
  * @param next Pointer to the next node in the list, or NULL if last node.
- * @param expected_prev Pointer to the node that should come before this one
- *                      in the final sorted order.
- * @param expected_next Pointer to the node that should come after this one
- *                      in the final sorted order.
  */
 typedef struct s_bidirectional_list
 {
 	int							value;
 	struct s_bidirectional_list	*previous;
 	struct s_bidirectional_list	*next;
-	struct s_bidirectional_list	*expected_prev;
-	struct s_bidirectional_list	*expected_next;
 }								t_blist;
 
 /**
@@ -164,11 +158,10 @@ void							apply_double_rot(t_stack *stack_a,
  *
  * @param source_stack Pointer to the source stack (where elements are taken from).
  * @param dest_stack Pointer to the destination stack (where elements are inserted).
- * @param use_skip_optimization 1 to skip well-positioned elements, 0 to process all.
  * @return A pointer to a t_cost structure containing the calculated costs.
  */
 t_cost							*calculate_cost(t_stack *source_stack,
-									t_stack *dest_stack, int use_skip_optimization);
+									t_stack *dest_stack);
 
 /**
  * @brief Determines the most efficient distance to reach the optimal insertion
@@ -214,19 +207,6 @@ int								get_lowest_distance(int n, t_stack *stack_b,
  */
 int								get_optimized_cost(int a_mov, int b_mov);
 
-/**
- * @brief Checks if an element should be skipped during push_b phase
- *
- * This function determines if an element at the given index should be
- * skipped (not pushed to stack_b) because it's already well positioned
- * in a subsequence, considering elements in both stacks.
- *
- * @param index Index of the element to check in stack_a
- * @param stack_a Pointer to stack A containing the element
- * @param stack_b Pointer to stack B (may contain related elements)
- * @return 1 if element should be skipped, 0 if it should be processed
- */
-int								should_skip_element(int index, t_stack *stack);
 
 /**
  * @brief Moves all elements from stack_b to stack_a in descending order
@@ -677,6 +657,7 @@ void							clean_stack(t_stack *stack);
  */
 void							error(t_stack *stack_a, t_stack *stack_b,
 									t_cost *cost);
+
 
 ////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// DEBUG ////////////////////////////////////////

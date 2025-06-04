@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:57:56 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/02 22:57:24 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/04 12:53:36 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,15 +89,19 @@ int	get_lowest_distance(int n, t_stack *dst_stack, int a_distance)
 int	get_optimized_cost(int a_mov, int b_mov)
 {
 	int	cost;
+	int	abs_a;
+	int	abs_b;
 
+	abs_a = abs(a_mov);
+	abs_b = abs(b_mov);
 	if ((a_mov > 0 && b_mov < 0) || (a_mov < 0 && b_mov > 0))
-		cost = abs(a_mov) + abs(b_mov);
+		cost = abs_a + abs_b;
 	else
 	{
-		if (abs(a_mov) > abs(b_mov))
-			cost = abs(a_mov);
+		if (abs_a > abs_b)
+			cost = abs_a;
 		else
-			cost = abs(b_mov);
+			cost = abs_b;
 	}
 	return (cost + 1);
 }
