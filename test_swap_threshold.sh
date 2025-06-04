@@ -9,7 +9,7 @@ TEST_SIZE=500
 RESULTS_DIR="threshold_results"
 
 # Rangos de valores a testear
-THRESHOLD_VALUES=(1.5 2.0 2.5 3.0 3.5 4.0 4.5 5.0)
+THRESHOLD_VALUES=(3.5 4.0 4.5 5.0)
 
 # Colores para output
 RED='\033[0;31m'
@@ -19,16 +19,149 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 echo -e "${BLUE}=== Script de Optimización SWAP_THRESHOLD ===${NC}"
-echo -e "${YELLOW}Generando $NUM_CASES casos de prueba con $TEST_SIZE elementos cada uno...${NC}"
 
-# Crear directorio de resultados
+# Crear directorio de resultados si no existe
 mkdir -p "$RESULTS_DIR"
 
-echo -e "${GREEN}Directorio de resultados creado: $RESULTS_DIR${NC}"
+# Función para verificar si existen casos de prueba
+check_existing_test_cases() {
+    local cases_found=0
+
+    # Verificar si existe el directorio y los archivos de casos
+    if [ -d "$RESULTS_DIR" ]; then
+        for i in $(seq 1 $NUM_CASES); do
+            if [ -f "$RESULTS_DIR/case_$i.txt" ]; then
+                cases_found=$((cases_found + 1))
+            fi
+        done
+    fi
+
+    echo $cases_found
+}
+
+# Función para mostrar información de casos existentes
+show_existing_cases_info() {
+    local existing_cases=$(check_existing_test_cases)
+
+    if [ $existing_cases -gt 0 ]; then
+        echo -e "${GREEN}Se encontraron $existing_cases casos de prueba existentes en $RESULTS_DIR/${NC}"
+
+        # Mostrar información adicional si existe
+        if [ -f "$RESULTS_DIR/test_cases.txt" ]; then
+            local file_size=$(du -h "$RESULTS_DIR/test_cases.txt" 2>/dev/null | cut -f1)
+            echo -e "${YELLOW}Archivo principal: test_cases.txt ($file_size)${NC}"
+        fi
+
+        # Mostrar algunos archivos de ejemplo
+        echo -e "${YELLOW}Archivos encontrados:${NC}"
+        ls -la "$RESULTS_DIR"/case_*.txt 2>/dev/null | head -5
+        if [ $existing_cases -gt 5 ]; then
+            echo "... y $((existing_cases - 5)) más"
+        fi
+    else
+        echo -e "${YELLOW}No se encontraron casos de prueba existentes${NC}"
+    fi
+}
+
+# Función para preguntar al usuario qué hacer con los casos de prueba
+ask_about_test_cases() {
+    local existing_cases=$(check_existing_test_cases)
+
+    if [ $existing_cases -gt 0 ]; then
+        echo ""
+        show_existing_cases_info
+        echo ""
+        echo -e "${BLUE}¿Qué deseas hacer con los casos de prueba?${NC}"
+        echo "1) Usar los casos existentes ($existing_cases casos)"
+        echo "2) Generar nuevos casos ($NUM_CASES casos de $TEST_SIZE elementos)"
+        echo "3) Salir"
+        echo ""
+
+        while true; do
+            read -p "Selecciona una opción (1-3): " choice
+            case $choice in
+                1)
+                    echo -e "${GREEN}Usando casos de prueba existentes...${NC}"
+                    return 0
+                    ;;
+                2)
+                    echo -e "${YELLOW}Se generarán nuevos casos de prueba...${NC}"
+                    return 1
+                    ;;
+                3)
+                    echo -e "${BLUE}Saliendo...${NC}"
+                    exit 0
+                    ;;
+                *)
+                    echo -e "${RED}Opción inválida. Por favor selecciona 1, 2 o 3.${NC}"
+                    ;;
+            esac
+        done
+    else
+        echo -e "${YELLOW}No se encontraron casos existentes. Generando $NUM_CASES casos de prueba con $TEST_SIZE elementos cada uno...${NC}"
+        return 1
+    fi
+}
+
+# Función para validar que los casos existentes están completos
+validate_existing_cases() {
+    local missing_cases=0
+    local invalid_cases=0
+
+    echo -e "${YELLOW}Validando casos de prueba existentes...${NC}"
+
+    for i in $(seq 1 $NUM_CASES); do
+        case_file="$RESULTS_DIR/case_$i.txt"
+
+        if [ ! -f "$case_file" ]; then
+            missing_cases=$((missing_cases + 1))
+        else
+            # Verificar que el archivo no esté vacío y tenga el formato correcto
+            word_count=$(wc -w < "$case_file" 2>/dev/null)
+            if [ "$word_count" -ne $TEST_SIZE ]; then
+                invalid_cases=$((invalid_cases + 1))
+            fi
+        fi
+    done
+
+    if [ $missing_cases -gt 0 ] || [ $invalid_cases -gt 0 ]; then
+        echo -e "${RED}Problemas encontrados en los casos existentes:${NC}"
+        [ $missing_cases -gt 0 ] && echo -e "${RED}  - $missing_cases casos faltantes${NC}"
+        [ $invalid_cases -gt 0 ] && echo -e "${RED}  - $invalid_cases casos con formato incorrecto${NC}"
+
+        echo -e "${YELLOW}Se recomienda generar nuevos casos de prueba.${NC}"
+        echo -e "${BLUE}¿Deseas continuar con los casos existentes válidos o generar nuevos?${NC}"
+        echo "1) Continuar con casos válidos"
+        echo "2) Generar nuevos casos"
+
+        while true; do
+            read -p "Selecciona una opción (1-2): " choice
+            case $choice in
+                1)
+                    echo -e "${YELLOW}Continuando con casos válidos...${NC}"
+                    return 0
+                    ;;
+                2)
+                    return 1
+                    ;;
+                *)
+                    echo -e "${RED}Opción inválida. Por favor selecciona 1 o 2.${NC}"
+                    ;;
+            esac
+        done
+    else
+        echo -e "${GREEN}Todos los casos existentes son válidos${NC}"
+        return 0
+    fi
+}
 
 # Función para generar casos de prueba
 generate_test_cases() {
     echo -e "${YELLOW}Generando casos de prueba...${NC}"
+
+    # Limpiar casos anteriores si existen
+    rm -f "$RESULTS_DIR"/case_*.txt
+    rm -f "$RESULTS_DIR/test_cases.txt"
 
     # Archivo con todos los casos
     echo "" > "$RESULTS_DIR/test_cases.txt"
@@ -199,8 +332,20 @@ main() {
         exit 1
     fi
 
-    # Generar casos de prueba
-    generate_test_cases
+    # Preguntar sobre los casos de prueba
+    ask_about_test_cases
+    use_existing=$?
+
+    # Si se decide usar casos existentes, validarlos
+    if [ $use_existing -eq 0 ]; then
+        validate_existing_cases
+        if [ $? -ne 0 ]; then
+            generate_test_cases
+        fi
+    else
+        # Generar nuevos casos
+        generate_test_cases
+    fi
 
     # Crear archivo de resumen CSV
     echo "threshold,avg_operations,successful_cases,cases_over_5500" > "$RESULTS_DIR/summary.csv"

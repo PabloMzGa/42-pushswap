@@ -3,28 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   push_b.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 01:54:05 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/04 18:01:02 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/04 18:42:08 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pushswap.h"
-
-int	is_inside_range(t_stack *stack, int min, int max)
-{
-	t_blist	*node;
-
-	node = stack->top_element;
-	while (node)
-	{
-		if (node->value >= min && node->value < max)
-			return (1);
-		node = node->next;
-	}
-	return (0);
-}
 
 /**
  * @brief Checks if a stack is sorted in ascending order (from top to bottom)
