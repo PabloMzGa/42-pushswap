@@ -6,7 +6,7 @@
 #    By: pablo <pablo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/20 14:34:30 by pabmart2          #+#    #+#              #
-#    Updated: 2025/06/02 20:31:35 by pablo            ###   ########.fr        #
+#    Updated: 2025/06/02 21:47:14 by pablo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -26,9 +26,10 @@ SRC = \
 	src/algorithm/push_a.c \
 	src/algorithm/push_b.c \
 	src/algorithm/search_closest.c \
-	src/algorithm/well_positioned.c \
+	src/algorithm/ordered_checker.c \
 	src/blist_helpers/blstadd_back.c \
 	src/blist_helpers/blstadd_front.c \
+	src/blist_helpers/build_expected_links.c \
 	src/blist_helpers/create_node.c \
 	src/blist_helpers/get_distance.c \
 	src/blist_helpers/get_highest_node.c \

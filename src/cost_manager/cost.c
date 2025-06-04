@@ -42,8 +42,8 @@ static t_cost	*initialize_cost(t_stack *source_stack, t_stack *dest_stack)
 	if (!cost)
 		error(source_stack, dest_stack, NULL);
 	cost->total_cost = INT_MAX;
-	cost->stack_a_mov = INT_MAX / 2;
-	cost->stack_b_mov = INT_MAX / 2;
+	cost->source_mov = INT_MAX / 2;
+	cost->dest_mov = INT_MAX / 2;
 	return (cost);
 }
 
@@ -67,8 +67,8 @@ static void	compare_cost(t_cost **cost, int tmp_cost, int index, int ab_dist[])
 	{
 		(*cost)->total_cost = tmp_cost;
 		(*cost)->candidate_index = index;
-		(*cost)->stack_a_mov = ab_dist[0];
-		(*cost)->stack_b_mov = ab_dist[1];
+		(*cost)->source_mov = ab_dist[0];
+		(*cost)->dest_mov = ab_dist[1];
 	}
 }
 

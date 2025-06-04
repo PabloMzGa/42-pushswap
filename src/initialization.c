@@ -6,13 +6,13 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 13:28:04 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/28 17:52:34 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/02 22:56:26 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pushswap.h"
 
-t_stack	*initialize_empty_stack(void)
+t_stack	*initialize_empty_stack(char id)
 {
 	t_stack	*stack;
 
@@ -21,10 +21,11 @@ t_stack	*initialize_empty_stack(void)
 		return (NULL);
 	stack->top_element = NULL;
 	stack->size = 0;
+	stack->id = id;
 	return (stack);
 }
 
-t_stack	*initialize_stack(int top_value)
+t_stack	*initialize_stack(int top_value, char id)
 {
 	t_stack	*stack;
 
@@ -38,6 +39,7 @@ t_stack	*initialize_stack(int top_value)
 	stack->top_element->next = NULL;
 	stack->top_element->previous = NULL;
 	stack->size = 1;
+	stack->id = id;
 	return (stack);
 }
 
@@ -45,7 +47,7 @@ t_stack	*initialize_b_stack(t_stack *stack_a)
 {
 	t_stack	*stack_b;
 
-	stack_b = initialize_empty_stack();
+	stack_b = initialize_empty_stack('B');
 	push(stack_a, stack_b, NULL, 'b');
 	push(stack_a, stack_b, NULL, 'b');
 	return (stack_b);
@@ -67,7 +69,7 @@ t_stack	*populate_a_stack(int argc, char *argv[])
 		value = is_arg_correct(argc, argv, i++, stack_a);
 		if (i == 1)
 		{
-			stack_a = initialize_stack(value);
+			stack_a = initialize_stack(value, 'A');
 			if (!stack_a)
 				return (NULL);
 		}
@@ -79,5 +81,7 @@ t_stack	*populate_a_stack(int argc, char *argv[])
 			blstadd_back(&(stack_a->top_element), node);
 		}
 	}
-	return (stack_a->size = i, stack_a);
+	stack_a->size = i;
+	build_expected_order_links(stack_a);
+	return (stack_a);
 }

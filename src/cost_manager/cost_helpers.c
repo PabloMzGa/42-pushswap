@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:57:56 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/02 18:36:27 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/02 22:57:24 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,19 +52,27 @@ static int	set_hdistance(int candidate, t_stack *stack)
 		return (INT_MAX);
 }
 
-int	get_lowest_distance(int n, t_stack *stack_b, int a_distance)
+int	get_lowest_distance(int n, t_stack *dst_stack, int a_distance)
 {
 	int	h_distance;
 	int	l_distance;
 	int	h_candidate;
 	int	l_candidate;
 
-	h_candidate = search_closest_high(n, stack_b);
-	l_candidate = search_closest_low(n, stack_b);
+	if (dst_stack->id == 'B')
+	{
+		h_candidate = search_closest_high(n, dst_stack);
+		l_candidate = search_closest_low(n, dst_stack);
+	}
+	else
+	{
+		h_candidate = search_closest_low(n, dst_stack);
+		l_candidate = search_closest_high(n, dst_stack);
+	}
 	if ((h_candidate == -1 && l_candidate == -1))
 		return (INT_MAX);
-	h_distance = set_hdistance(h_candidate, stack_b);
-	l_distance = set_ldistance(l_candidate, stack_b);
+	h_distance = set_hdistance(h_candidate, dst_stack);
+	l_distance = set_ldistance(l_candidate, dst_stack);
 	if (h_distance == INT_MAX && l_distance != INT_MAX)
 		return (l_distance);
 	else if (h_distance != INT_MAX && l_distance == INT_MAX)

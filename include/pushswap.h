@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:10:32 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/02 20:57:36 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/04 11:48:39 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,19 +25,27 @@
  * @brief A structure representing a node in a bidirectional linked list.
  *
  * This structure implements a node for a doubly linked list, allowing
- * traversal in both directions through the list.
+ * traversal in both directions through the list. It also includes
+ * pre-calculated pointers to the expected previous and next nodes
+ * in the sorted order for optimization purposes.
  *
  * @typedef t_blist
  * @param value The integer value stored in this node.
  * @param previous Pointer to the previous node in the list, or NULL if first
  *                 node.
  * @param next Pointer to the next node in the list, or NULL if last node.
+ * @param expected_prev Pointer to the node that should come before this one
+ *                      in the final sorted order.
+ * @param expected_next Pointer to the node that should come after this one
+ *                      in the final sorted order.
  */
 typedef struct s_bidirectional_list
 {
 	int							value;
 	struct s_bidirectional_list	*previous;
 	struct s_bidirectional_list	*next;
+	struct s_bidirectional_list	*expected_prev;
+	struct s_bidirectional_list	*expected_next;
 }								t_blist;
 
 /**
@@ -51,11 +59,13 @@ typedef struct s_bidirectional_list
  * @param size The number of elements currently in the stack.
  * @param top_element Pointer to the top element of the stack, implemented as a
  *                    bidirectional list (t_blist).
+ * @param id Character identifier for the stack ('A' or 'B').
  */
 typedef struct s_stack
 {
 	int							size;
 	t_blist						*top_element;
+	char						id;
 
 }								t_stack;
 
@@ -64,22 +74,22 @@ typedef struct s_stack
  * @brief Structure to store movement and cost information for stack operations.
  *
  * This structure is used to calculate and store the number of movements
- * required in both stacks (A and B), the total cost of an operation, and
+ * required in both source and destination stacks, the total cost of an operation, and
  * the indices of the elements involved in the operation.
  *
- * @param stack_a_mov Number of movements required in stack A. If it's negative
- *                    the movements are in reverse.
- * @param stack_b_mov Number of movements required in stack B. If it's negative
- *                    the movements are in reverse.
+ * @param source_mov Number of movements required in source stack. If it's negative
+ *                   the movements are in reverse.
+ * @param dest_mov Number of movements required in destination stack. If it's negative
+ *                 the movements are in reverse.
  * @param total_cost Total cost of the operation, typically calculated as the
  *                   sum of movements in both stacks.
- * @param candidate_index Index of the element in stack A involved in the
+ * @param candidate_index Index of the element in source stack involved in the
  *                        operation.
  **/
 typedef struct s_cost_info
 {
-	int							stack_a_mov;
-	int							stack_b_mov;
+	int							source_mov;
+	int							dest_mov;
 	int							total_cost;
 	int							candidate_index;
 }								t_cost;
@@ -216,8 +226,7 @@ int								get_optimized_cost(int a_mov, int b_mov);
  * @param stack_b Pointer to stack B (may contain related elements)
  * @return 1 if element should be skipped, 0 if it should be processed
  */
-int								should_skip_element(int index, t_stack *stack_a,
-									t_stack *stack_b);
+int								should_skip_element(int index, t_stack *stack);
 
 /**
  * @brief Moves all elements from stack_b to stack_a in descending order
@@ -274,23 +283,6 @@ void							push_b_algo(t_stack *stack_a, t_stack *stack_b);
 int								search_closest_high(int n, t_stack *stack);
 
 /**
- * @brief Finds the smallest value that is greater than the given value
- *        across both stacks.
- *
- * This function searches both stack_a and stack_b for values that are greater
- * than the provided value. It then returns the smallest of these higher values.
- * If no higher values are found in either stack, INT_MAX is returned.
- *
- * @param value The reference value to compare against
- * @param stack_a Pointer to the first stack
- * @param stack_b Pointer to the second stack
- * @return The smallest value greater than the given value found in either
- *         stack, or INT_MAX if no such value exists
- */
-int								search_closest_high_global(int value,
-									t_stack *stack_a, t_stack *stack_b);
-
-/**
  * @brief Searches for the closest lower value than the given number in the
  *        stack.
  *
@@ -308,22 +300,6 @@ int								search_closest_high_global(int value,
  */
 int								search_closest_low(int n, t_stack *stack);
 
-/**
- * @brief Finds the biggest value that is lower than the given value
- *        across both stacks.
- *
- * This function searches both stack_a and stack_b for values that are lower
- * than the provided value. It then returns the biggest of these lower values.
- * If no lower values are found in either stack, INT_MAX is returned.
- *
- * @param value The reference value to compare against
- * @param stack_a Pointer to the first stack
- * @param stack_b Pointer to the second stack
- * @return The smallest value greater than the given value found in either
- *         stack, or INT_MAX if no such value exists
- */
-int								search_closest_low_global(int value,
-									t_stack *stack_a, t_stack *stack_b);
 
 ////////////////////////////////////////////////////////////////////////////////
 /////////////////////////// ARGUMENTS CHECK ////////////////////////////////////
@@ -381,10 +357,11 @@ int								is_arg_correct(int argc, char *argv[], int i,
  * This function creates a new stack structure by allocating memory for it.
  * The stack is initialized with no elements (top_element is set to NULL).
  *
+ * @param id Character identifier for the stack ('A' or 'B').
  * @return A pointer to the newly created stack, or NULL if memory allocation
  * fails.
  */
-t_stack							*initialize_empty_stack(void);
+t_stack							*initialize_empty_stack(char id);
 
 /**
  * @brief Initializes stack B by creating an empty stack and pushing
@@ -405,11 +382,12 @@ t_stack							*initialize_b_stack(t_stack *stack_a);
  * allocation fails, the function ensures proper cleanup and returns NULL.
  *
  * @param top_value The value to initialize the top element of the stack with.
+ * @param id Character identifier for the stack ('A' or 'B').
  *
  * @return A pointer to the newly created stack, or NULL if memory allocation
  * fails.
  */
-t_stack							*initialize_stack(int top_value);
+t_stack							*initialize_stack(int top_value, char id);
 
 /**
  * @brief Populates stack A with values from command-line arguments
@@ -494,19 +472,6 @@ t_blist							*create_node(int n);
 int								get_highest_node(t_blist *lst);
 
 /**
- * @brief Find the index of the node with the lowest value in a linked list
- *
- * This function traverses the given linked list and identifies the node
- * containing the lowest value. It returns the index (position) of this node
- * in the list, with the first node being at index 0.
- *
- * @param lst Pointer to the first node of the linked list to search
- * @return The index of the node with the lowest value, or -1 if the list is
- *         empty
- */
-int								get_lowest_node(t_blist *lst);
-
-/**
  * @brief Retrieves the last node in a linked list.
  *
  * This function traverses a linked list starting from the given node
@@ -563,6 +528,19 @@ int								get_bottom_distance(int index, t_stack *stack);
  *         value indicates reverse movement.
  */
 int								get_top_distance(int index, t_stack *stack);
+
+/**
+ * @brief Builds expected order links for optimization
+ *
+ * This function creates the expected_prev and expected_next links for all
+ * nodes in the given stack. These links point to the nodes that should
+ * come immediately before and after each node in the final sorted order.
+ * This pre-computation allows for O(1) checking of whether a node is
+ * well-positioned in its sequence.
+ *
+ * @param stack_a Pointer to stack A containing all the nodes to process
+ */
+void							build_expected_order_links(t_stack *stack_a);
 
 ////////////////////////////////////////////////////////////////////////////////
 /////////////////////////// STACK OPERATIONS ///////////////////////////////////

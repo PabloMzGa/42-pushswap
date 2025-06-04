@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   apply_mov.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 12:16:58 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/26 21:21:07 by pabmart2         ###   ########.fr       */
+/*   Updated: 2025/06/02 22:14:45 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,17 @@
 
 void	apply_double_rot(t_stack *stack_a, t_stack *stack_b, t_cost *cost)
 {
-	if (cost->stack_a_mov < 0)
+	if (cost->source_mov < 0)
 	{
 		reverse_rotate(stack_a, stack_b, cost);
-		cost->stack_a_mov++;
-		cost->stack_b_mov++;
+		cost->source_mov++;
+		cost->dest_mov++;
 	}
 	else
 	{
 		rotate(stack_a, stack_b, cost);
-		cost->stack_a_mov--;
-		cost->stack_b_mov--;
+		cost->source_mov--;
+		cost->dest_mov--;
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 01:54:05 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/02 20:56:53 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/04 11:43:07 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,25 +32,25 @@ void	push_b_algo(t_stack *stack_a, t_stack *stack_b)
 	int		i;
 
 	i = 0;
-	while (stack_a->size > 0)
+	while (stack_a->size > 1)
 	{
 
-		// print_stack(stack_a, 'a');
-		// print_stack(stack_b, 'b');
-		cost = calculate_cost(stack_a, stack_b, 1);
-		// print_cost(cost, stack_a);
+/* 		 print_stack(stack_a, 'a');
+		 print_stack(stack_b, 'b'); */
+		cost = calculate_cost(stack_a, stack_b, 0);
+/* 		 print_cost(cost, stack_a); */
 		if (!cost)
 			break;
-		while (cost->stack_a_mov || cost->stack_b_mov)
+		while (cost->source_mov || cost->dest_mov)
 		{
-			if (cost->stack_a_mov > 0 && cost->stack_b_mov > 0)
+			if (cost->source_mov > 0 && cost->dest_mov > 0)
 				apply_double_rot(stack_a, stack_b, cost);
-			else if (cost->stack_a_mov < 0 && cost->stack_b_mov < 0)
+			else if (cost->source_mov < 0 && cost->dest_mov < 0)
 				apply_double_rot(stack_a, stack_b, cost);
-			else if (cost->stack_a_mov != 0)
-				apply_a_rot(stack_a, cost, &cost->stack_a_mov);
-			else if (cost->stack_b_mov != 0)
-				apply_b_rot(stack_b, cost, &cost->stack_b_mov);
+			else if (cost->source_mov != 0)
+				apply_a_rot(stack_a, cost, &cost->source_mov);
+			else if (cost->dest_mov != 0)
+				apply_b_rot(stack_b, cost, &cost->dest_mov);
 		}
 		push(stack_a, stack_b, cost, 'b');
 		free(cost);
