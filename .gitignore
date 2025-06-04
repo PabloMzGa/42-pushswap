@@ -3,3 +3,4 @@ build/*
 analysis
 !build/test.sh
 threshold_results
+!build/max_case.txt

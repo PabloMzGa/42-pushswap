@@ -6,7 +6,7 @@
 /*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 01:54:05 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/04 18:42:08 by pabmart2         ###   ########.fr       */
+/*   Updated: 2025/06/04 21:22:13 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,12 @@ static int	is_stack_sorted(t_stack *stack)
 	return (1);
 }
 
-
+/**
+ * TODO: Parece que en la mayoría de casos, no merce la pena hacer este swap.
+ * Diría que los casos en los que se son los que hay una diferencia muy bestia
+ * entre parejas. Quizás habría que hacer un "scooping" primero
+ * para poder tomar la decisión de activarlo o no
+ */
 /**
  * @brief Checks if swapping would improve distribution balance
  *
@@ -74,8 +79,10 @@ int	should_swap_during_algorithm(t_stack *stack_a, t_stack *stack_b)
 	// Swap si la diferencia es significativa (más del 20% del valor menor)
 	// Esto evita distribuciones extremas como (400, 14, 350, 70)
 	#ifndef SWAP_THRESHOLD
-	# define SWAP_THRESHOLD 4
+	# define SWAP_THRESHOLD 0
 	#endif
+	if(SWAP_THRESHOLD == 0)
+		return (0);
 	if (difference > 0 && difference > (second_value / SWAP_THRESHOLD))
 		return (1);
 
