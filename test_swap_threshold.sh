@@ -9,7 +9,7 @@ TEST_SIZE=500
 RESULTS_DIR="threshold_results"
 
 # Rangos de valores a testear
-THRESHOLD_VALUES=(0 3.5 4.0 4.5 5.0 5.5 6.0)
+THRESHOLD_VALUES=(0 )
 
 # Colores para output
 RED='\033[0;31m'
