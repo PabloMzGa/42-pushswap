@@ -6,49 +6,73 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 12:01:39 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/02 20:57:07 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/06 19:33:26 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pushswap.h"
 
-/* void	push_a_algo(t_stack *stack_a, t_stack *stack_b)
+/**
+ * @brief Rotates stack_a so that the highest value node is positioned at the
+ *        bottom.
+ *
+ * This function locates the node with the highest value in stack_a and performs
+ * either rotations or reverse-rotations to move it to the bottom of the stack,
+ * choosing the shortest path. After execution, the lowest value will be at the
+ * top of the stack.
+ *
+ * @param stack_a Pointer to the stack to be rotated.
+ */
+static void	final_sort_stack_a(t_stack *stack_a)
 {
-	int	index;
-	int	movements;
+	int	max_position;
 
-	while (stack_b->size > 1)
+	max_position = get_highest_node(stack_a->top_element);
+	if (max_position == -1)
+		return ;
+	if (max_position == stack_a->size - 1)
+		return ;
+	if (max_position < stack_a->size / 2)
 	{
-		index = get_highest_node(stack_b->top_element);
-		movements = get_top_distance(index, stack_b);
-		while (movements != 0)
-			apply_b_rot(stack_b, NULL, &movements);
-		push(stack_a, stack_b, NULL, 'a');
+		while (max_position > -1)
+		{
+			rotate(stack_a, NULL, NULL);
+			max_position--;
+		}
 	}
-	push(stack_a, stack_b, NULL, 'a');
-} */
+	else
+	{
+		while (max_position < stack_a->size - 1)
+		{
+			reverse_rotate(stack_a, NULL, NULL);
+			max_position++;
+		}
+	}
+}
 
 void	push_a_algo(t_stack *stack_a, t_stack *stack_b)
 {
 	t_cost	*cost;
 
+	cost = NULL;
 	while (stack_b->size > 0)
 	{
-		cost = calculate_cost(stack_b, stack_a, 0);
+		cost = calculate_cost(stack_b, stack_a);
 		if (!cost)
-			break;
-		while (cost->stack_a_mov || cost->stack_b_mov)
+			break ;
+		while (cost->source_mov || cost->dest_mov)
 		{
-			if (cost->stack_a_mov > 0 && cost->stack_b_mov > 0)
-				apply_double_rot(stack_b, stack_a, cost);
-			else if (cost->stack_a_mov < 0 && cost->stack_b_mov < 0)
-				apply_double_rot(stack_b, stack_a, cost);
-			else if (cost->stack_a_mov != 0)
-				apply_a_rot(stack_b, cost, &cost->stack_a_mov);
-			else if (cost->stack_b_mov != 0)
-				apply_b_rot(stack_a, cost, &cost->stack_b_mov);
+			if (cost->source_mov > 0 && cost->dest_mov > 0)
+				apply_double_rot(stack_a, stack_b, cost);
+			else if (cost->source_mov < 0 && cost->dest_mov < 0)
+				apply_double_rot(stack_a, stack_b, cost);
+			else if (cost->source_mov != 0)
+				apply_b_rot(stack_b, cost, &cost->source_mov);
+			else if (cost->dest_mov != 0)
+				apply_a_rot(stack_a, cost, &cost->dest_mov);
 		}
-		push(stack_b, stack_a, cost, 'a');
+		push(stack_a, stack_b, cost, 'a');
 		free(cost);
 	}
+	final_sort_stack_a(stack_a);
 }

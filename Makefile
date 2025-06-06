@@ -6,7 +6,7 @@
 #    By: pablo <pablo@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/20 14:34:30 by pabmart2          #+#    #+#              #
-#    Updated: 2025/06/02 20:31:35 by pablo            ###   ########.fr        #
+#    Updated: 2025/06/06 18:56:21 by pablo            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,9 @@ BUILD_DIR = build
 OBJ_DIR = build/obj
 NAME = push_swap
 
+HEADERS = \
+	include/pushswap.h \
+
 SRC = \
 	src/main.c \
 	src/arg_check.c \
@@ -26,7 +29,6 @@ SRC = \
 	src/algorithm/push_a.c \
 	src/algorithm/push_b.c \
 	src/algorithm/search_closest.c \
-	src/algorithm/well_positioned.c \
 	src/blist_helpers/blstadd_back.c \
 	src/blist_helpers/blstadd_front.c \
 	src/blist_helpers/create_node.c \
@@ -74,7 +76,7 @@ $(NAME): libft $(OBJ)
 	@echo "\033[32m\n¡$(NAME) compiled! \
 	ᕦ(\033[36m⌐■\033[32m_\033[36m■\033[32m)ᕤ\n"
 
-$(OBJ) : $(OBJ_DIR)/%.o : %.c
+$(OBJ) : $(OBJ_DIR)/%.o : %.c $(HEADERS)
 	@mkdir -p $(dir $@)
 	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 	@echo "\033[34mCompiling: \033[0m$<"

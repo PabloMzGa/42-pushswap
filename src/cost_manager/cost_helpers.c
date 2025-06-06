@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 16:57:56 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/02 18:36:27 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/06 18:00:58 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,19 +52,47 @@ static int	set_hdistance(int candidate, t_stack *stack)
 		return (INT_MAX);
 }
 
-int	get_lowest_distance(int n, t_stack *stack_b, int a_distance)
+/**
+ * @brief Sets the high and low candidate values for a given number and
+ * destination stack.
+ *
+ * Depending on the id of the destination stack, this function assigns the
+ * closest high and low candidates to the provided pointers. If the stack id
+ * is 'B', it searches for the closest high and low values relative to n in
+ * the destination stack. Otherwise, it reverses the assignment.
+ *
+ * @param h_candidate Pointer to store the high candidate value.
+ * @param l_candidate Pointer to store the low candidate value.
+ * @param n The reference number to compare against stack elements.
+ * @param dst_stack Pointer to the destination stack structure.
+ */
+static void	set_hl_candidate(int *h_candidate, int *l_candidate, int n,
+		t_stack *dst_stack)
+{
+	if (dst_stack->id == 'B')
+	{
+		*h_candidate = search_closest_high(n, dst_stack);
+		*l_candidate = search_closest_low(n, dst_stack);
+	}
+	else
+	{
+		*h_candidate = search_closest_low(n, dst_stack);
+		*l_candidate = search_closest_high(n, dst_stack);
+	}
+}
+
+int	get_lowest_distance(int n, t_stack *dst_stack, int a_distance)
 {
 	int	h_distance;
 	int	l_distance;
 	int	h_candidate;
 	int	l_candidate;
 
-	h_candidate = search_closest_high(n, stack_b);
-	l_candidate = search_closest_low(n, stack_b);
+	set_hl_candidate(&h_candidate, &l_candidate, n, dst_stack);
 	if ((h_candidate == -1 && l_candidate == -1))
 		return (INT_MAX);
-	h_distance = set_hdistance(h_candidate, stack_b);
-	l_distance = set_ldistance(l_candidate, stack_b);
+	h_distance = set_hdistance(h_candidate, dst_stack);
+	l_distance = set_ldistance(l_candidate, dst_stack);
 	if (h_distance == INT_MAX && l_distance != INT_MAX)
 		return (l_distance);
 	else if (h_distance != INT_MAX && l_distance == INT_MAX)
@@ -81,15 +109,19 @@ int	get_lowest_distance(int n, t_stack *stack_b, int a_distance)
 int	get_optimized_cost(int a_mov, int b_mov)
 {
 	int	cost;
+	int	abs_a;
+	int	abs_b;
 
+	abs_a = abs(a_mov);
+	abs_b = abs(b_mov);
 	if ((a_mov > 0 && b_mov < 0) || (a_mov < 0 && b_mov > 0))
-		cost = abs(a_mov) + abs(b_mov);
+		cost = abs_a + abs_b;
 	else
 	{
-		if (abs(a_mov) > abs(b_mov))
-			cost = abs(a_mov);
+		if (abs_a > abs_b)
+			cost = abs_a;
 		else
-			cost = abs(b_mov);
+			cost = abs_b;
 	}
 	return (cost + 1);
 }
