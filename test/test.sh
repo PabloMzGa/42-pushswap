@@ -1,10 +1,11 @@
 #!/bin/bash
 
 # =============================================================================
-# SCRIPT DE PRUEBAS PARA PUSH_SWAP
+# SCRIPT DE PRUEBAS PARA PUSH_SWAP CON VERIFICACIÓN CHECKER
 # =============================================================================
-# Ejecuta múltiples pruebas del algoritmo push_swap en paralelo y genera
-# estadísticas detalladas sobre el rendimiento.
+# Ejecuta múltiples pruebas del algoritmo push_swap en paralelo, verifica
+# la corrección de cada resultado usando checker_linux y genera estadísticas
+# detalladas sobre el rendimiento y la exactitud.
 # =============================================================================
 
 # Colores para output
@@ -43,7 +44,7 @@ print_info() {
 print_banner() {
     echo -e "${CYAN}${BOLD}"
     echo "═══════════════════════════════════════════════════════════"
-    echo "           PUSH_SWAP PERFORMANCE TESTER v2.0"
+    echo "        PUSH_SWAP PERFORMANCE TESTER v2.1 + CHECKER"
     echo "═══════════════════════════════════════════════════════════"
     echo -e "${NC}"
 }
@@ -100,13 +101,19 @@ if [ "$min" -gt "$max" ]; then
     exit 1
 fi
 
-# Verificar que push_swap existe
-if [ ! -f "./push_swap" ]; then
-    print_error "El ejecutable './push_swap' no se encuentra en el directorio actual"
+# Verificar que push_swap y checker_linux existen
+if [ ! -f "../build/push_swap" ]; then
+    print_error "El ejecutable '../build/push_swap' no se encuentra en el directorio build"
+    exit 1
+fi
+
+if [ ! -f "./checker_linux" ]; then
+    print_error "El ejecutable './checker_linux' no se encuentra en el directorio test"
     exit 1
 fi
 
 print_success "Parámetros validados correctamente"
+print_info "Las pruebas incluirán verificación automática con checker_linux"
 
 # Mostrar configuración
 echo ""
@@ -124,14 +131,23 @@ fi
 echo -e "  ${BOLD}Tiempo estimado:${NC} ${MAGENTA}~${tiempo_estimado} minutos${NC}"
 echo ""
 
-# Inicializar archivos de resultados
+# Inicializar directorio y archivos de resultados
 TIMESTAMP=$(date '+%Y%m%d_%H%M%S')
-TEMP_DIR="temp_${TIMESTAMP}"
-RESULTS_FILE="results_${TIMESTAMP}.txt"
-MAX_CASE_FILE="max_case_${TIMESTAMP}.txt"
-OVER_5500_FILE="cases_over_5500.txt"
+LOGS_DIR="logs_${TIMESTAMP}"
+TEMP_DIR="${LOGS_DIR}/temp"
+RESULTS_FILE="${LOGS_DIR}/results.txt"
+MAX_CASE_FILE="${LOGS_DIR}/max_case.txt"
+OVER_5500_FILE="${LOGS_DIR}/cases_over_5500.txt"
+CHECKER_ERRORS_FILE="${LOGS_DIR}/checker_errors.txt"
 
-print_header "📁 Preparando archivos de resultados..."
+print_header "📁 Preparando directorio y archivos de resultados..."
+
+# Crear directorio principal de logs
+if ! mkdir -p "$LOGS_DIR"; then
+    print_error "No se pudo crear el directorio de logs: $LOGS_DIR"
+    exit 1
+fi
+print_success "Directorio de logs creado: $LOGS_DIR"
 
 # Crear directorio temporal
 if ! mkdir -p "$TEMP_DIR"; then
@@ -155,30 +171,27 @@ print_success "Directorio temporal creado: $TEMP_DIR"
 # Limpiar max_case
 echo "" > "$MAX_CASE_FILE"
 
-# Crear archivo para casos que superan 5500 movimientos si no existe
-if [ ! -f "$OVER_5500_FILE" ]; then
-    {
-        echo "═══════════════════════════════════════════════════════════"
-        echo "           CASOS QUE SUPERAN 5500 MOVIMIENTOS"
-        echo "═══════════════════════════════════════════════════════════"
-        echo "Archivo creado: $(date)"
-        echo "═══════════════════════════════════════════════════════════"
-    } > "$OVER_5500_FILE"
-fi
-
-# Añadir nueva sesión al archivo de casos que superan 5500 movimientos
+# Crear archivo para casos que superan 5500 movimientos
 {
-    echo ""
-    echo "╔══════════════════════════════════════════════════════════╗"
-    echo "║                  NUEVA SESIÓN DE PRUEBAS                ║"
-    echo "╚══════════════════════════════════════════════════════════╝"
-    echo "Fecha: $(date)"
-    echo "Parámetros: repeticiones=$repeticiones cantidad=$cantidad min=$min max=$max"
-    echo "════════════════════════════════════════════════════════════"
-    echo ""
-} >> "$OVER_5500_FILE"
+    echo "═══════════════════════════════════════════════════════════"
+    echo "           CASOS QUE SUPERAN 5500 MOVIMIENTOS"
+    echo "═══════════════════════════════════════════════════════════"
+    echo "Archivo creado: $(date)"
+    echo "═══════════════════════════════════════════════════════════"
+} > "$OVER_5500_FILE"
 
-print_success "Archivos preparados: $RESULTS_FILE, $MAX_CASE_FILE"
+# Crear archivo para errores de verificación
+{
+    echo "═══════════════════════════════════════════════════════════"
+    echo "           ERRORES DE VERIFICACIÓN CHECKER_LINUX"
+    echo "═══════════════════════════════════════════════════════════"
+    echo "Fecha y hora: $(date)"
+    echo "Parámetros: repeticiones=$repeticiones cantidad=$cantidad min=$min max=$max"
+    echo "═══════════════════════════════════════════════════════════"
+    echo ""
+} > "$CHECKER_ERRORS_FILE"
+
+print_success "Archivos preparados en: $LOGS_DIR"
 
 # Función para mostrar la barra de progreso mejorada
 mostrar_progreso() {
@@ -186,6 +199,7 @@ mostrar_progreso() {
     local total=$2
     local tiempo_transcurrido=$3
     local casos_5500=$4
+    local checker_errors=$5
 
     local porcentaje=0
     if [ $total -gt 0 ]; then
@@ -217,8 +231,8 @@ mostrar_progreso() {
     fi
 
     # Mostrar la barra con información detallada
-    printf "\r${CYAN}[${GREEN}%s${CYAN}]${NC} ${BOLD}%3d%%${NC} ${MAGENTA}(%d/%d)${NC} │ ${YELLOW}%s${NC} restante │ ${RED}%d${NC} >5500" \
-           "$barra" "$porcentaje" "$completadas" "$total" "$tiempo_restante" "$casos_5500"
+    printf "\r${CYAN}[${GREEN}%s${CYAN}]${NC} ${BOLD}%3d%%${NC} ${MAGENTA}(%d/%d)${NC} │ ${YELLOW}%s${NC} restante │ ${RED}%d${NC} >5500 │ ${RED}%d${NC} errores" \
+           "$barra" "$porcentaje" "$completadas" "$total" "$tiempo_restante" "$casos_5500" "$checker_errors"
 }
 
 # Función para mostrar estadísticas en tiempo real
@@ -297,7 +311,7 @@ ejecutar_prueba() {
     done
 
     # Ejecutar push_swap con los números y capturar la salida
-    local PUSH_SWAP_OUTPUT=$(./push_swap $NUMS 2>/dev/null)
+    local PUSH_SWAP_OUTPUT=$(../build/push_swap $NUMS 2>/dev/null)
     local LINE_COUNT=$(echo "$PUSH_SWAP_OUTPUT" | wc -l)
 
     # Verificar si hay líneas vacías al final y ajustar
@@ -305,11 +319,57 @@ ejecutar_prueba() {
         LINE_COUNT=$((LINE_COUNT - 1))
     fi
 
-    # Escribir resultado al archivo temporal
-    echo "$LINE_COUNT" >> "$TEMP_DIR/results_tmp_$r"
+    # Verificar la corrección con checker_linux
+    local CHECKER_RESULT=""
+    local CHECKER_STATUS="OK"
+    if [ -n "$PUSH_SWAP_OUTPUT" ]; then
+        CHECKER_RESULT=$(echo "$PUSH_SWAP_OUTPUT" | ./checker_linux $NUMS 2>/dev/null)
+        # Limpiar posibles espacios o caracteres extra
+        CHECKER_RESULT=$(echo "$CHECKER_RESULT" | tr -d '\n\r\t ')
+        if [ "$CHECKER_RESULT" != "OK" ]; then
+            CHECKER_STATUS="ERROR"
+            # Guardar el caso que falló la verificación
+            local checker_error_file="$TEMP_DIR/checker_error_tmp_$r"
+            {
+                echo "┌─────────────────────────────────────────┐"
+                echo "│           ERROR DE VERIFICACIÓN #$r"
+                echo "└─────────────────────────────────────────┘"
+                echo "RESULTADO CHECKER: $CHECKER_RESULT"
+                echo "OPERACIONES: $LINE_COUNT"
+                echo "SECUENCIA: $NUMS"
+                echo "COMANDO: ../build/push_swap $NUMS | ./checker_linux $NUMS"
+                echo ""
+                echo "MOVIMIENTOS EJECUTADOS:"
+                echo "$PUSH_SWAP_OUTPUT"
+                echo ""
+                echo "═══════════════════════════════════════════════════════════"
+                echo ""
+            } > "$checker_error_file"
 
-    # Si supera 5500 operaciones, guardar el caso completo
-    if [ "$LINE_COUNT" -gt 5500 ]; then
+            # Marcar el error para el conteo
+            echo "1" >> "$TEMP_DIR/checker_errors_tmp_$r"
+        fi
+    else
+        # Si push_swap no produjo salida, también es un error
+        CHECKER_STATUS="ERROR"
+        local checker_error_file="$TEMP_DIR/checker_error_tmp_$r"
+        {
+            echo "┌─────────────────────────────────────────┐"
+            echo "│      PUSH_SWAP SIN SALIDA #$r"
+            echo "└─────────────────────────────────────────┘"
+            echo "RESULTADO: Push_swap no produjo salida"
+            echo "SECUENCIA: $NUMS"
+            echo "COMANDO: ../build/push_swap $NUMS"
+            echo ""
+            echo "═══════════════════════════════════════════════════════════"
+            echo ""
+        } > "$checker_error_file"
+
+        echo "1" >> "$TEMP_DIR/checker_errors_tmp_$r"
+    fi
+
+    # Si supera 5500 operaciones y es válido, guardar el caso completo
+    if [ "$LINE_COUNT" -gt 5500 ] && [ "$CHECKER_STATUS" = "OK" ]; then
         local over_5500_file="$TEMP_DIR/over_5500_tmp_$r"
         {
             echo "┌─────────────────────────────────────────┐"
@@ -317,7 +377,7 @@ ejecutar_prueba() {
             echo "└─────────────────────────────────────────┘"
             echo "OPERACIONES: $LINE_COUNT"
             echo "SECUENCIA: $NUMS"
-            echo "COMANDO: ./push_swap $NUMS"
+            echo "COMANDO: ../build/push_swap $NUMS"
             echo ""
             echo "MOVIMIENTOS EJECUTADOS:"
 
@@ -356,8 +416,15 @@ ejecutar_prueba() {
         echo "1" >> "$TEMP_DIR/count_5500_tmp_$r"
     fi
 
-    # Guardar el caso y sus números en un archivo temporal
-    echo "$LINE_COUNT:$NUMS" >> "$TEMP_DIR/results_cases_tmp_$r"
+    # Guardar el caso y sus números en un archivo temporal (solo si el checker dice OK)
+    if [ "$CHECKER_STATUS" = "OK" ]; then
+        echo "$LINE_COUNT:$NUMS" >> "$TEMP_DIR/results_cases_tmp_$r"
+        # Escribir resultado al archivo temporal solo si es válido
+        echo "$LINE_COUNT" >> "$TEMP_DIR/results_tmp_$r"
+    else
+        # Para casos con errores, no incluir en estadísticas de operaciones
+        echo "ERROR:$NUMS" >> "$TEMP_DIR/results_cases_tmp_$r"
+    fi
 
     # Marcar como completada (para la barra de progreso)
     touch "$TEMP_DIR/completed_$r"
@@ -367,10 +434,14 @@ ejecutar_prueba() {
 print_header "🚀 Iniciando ejecución de pruebas..."
 echo ""
 
-# Limpiar solo archivos temporales antiguos (que no sean el actual)
-for old_temp in temp_*; do
-    if [ -d "$old_temp" ] && [ "$old_temp" != "$TEMP_DIR" ]; then
-        rm -rf "$old_temp" 2>/dev/null
+# Limpiar solo directorios de logs antiguos (más de 1 día)
+for old_logs in logs_*; do
+    if [ -d "$old_logs" ] && [ "$old_logs" != "$LOGS_DIR" ]; then
+        # Limpiar solo directorios de logs más antiguos que 1 día (opcional)
+        if [ $(find "$old_logs" -type d -mtime +1 2>/dev/null | wc -l) -gt 0 ]; then
+            print_info "Limpiando logs antiguos: $old_logs"
+            rm -rf "$old_logs" 2>/dev/null
+        fi
     fi
 done
 
@@ -393,7 +464,8 @@ for ((r=1; r<=repeticiones; r++)); do
         completadas=$(ls "$TEMP_DIR"/completed_* 2>/dev/null | wc -l)
         tiempo_transcurrido=$(($(date +%s) - START_TIME))
         casos_5500=$(ls "$TEMP_DIR"/count_5500_tmp_* 2>/dev/null | wc -l)
-        mostrar_progreso $completadas $repeticiones $tiempo_transcurrido $casos_5500
+        checker_errors=$(ls "$TEMP_DIR"/checker_errors_tmp_* 2>/dev/null | wc -l)
+        mostrar_progreso $completadas $repeticiones $tiempo_transcurrido $casos_5500 $checker_errors
         sleep 0.2
     done
 
@@ -411,8 +483,9 @@ while [ $completadas -lt $repeticiones ]; do
     completadas=$(ls "$TEMP_DIR"/completed_* 2>/dev/null | wc -l)
     tiempo_transcurrido=$(($(date +%s) - START_TIME))
     casos_5500=$(ls "$TEMP_DIR"/count_5500_tmp_* 2>/dev/null | wc -l)
+    checker_errors=$(ls "$TEMP_DIR"/checker_errors_tmp_* 2>/dev/null | wc -l)
 
-    mostrar_progreso $completadas $repeticiones $tiempo_transcurrido $casos_5500
+    mostrar_progreso $completadas $repeticiones $tiempo_transcurrido $casos_5500 $checker_errors
 
     if [ $completadas -eq $repeticiones ]; then
         progress_shown=true
@@ -426,7 +499,8 @@ done
 if [ "$progress_shown" = false ]; then
     tiempo_transcurrido=$(($(date +%s) - START_TIME))
     casos_5500=$(ls "$TEMP_DIR"/count_5500_tmp_* 2>/dev/null | wc -l)
-    mostrar_progreso $repeticiones $repeticiones $tiempo_transcurrido $casos_5500
+    checker_errors=$(ls "$TEMP_DIR"/checker_errors_tmp_* 2>/dev/null | wc -l)
+    mostrar_progreso $repeticiones $repeticiones $tiempo_transcurrido $casos_5500 $checker_errors
 fi
 echo ""
 
@@ -443,6 +517,7 @@ print_header "📊 Procesando resultados..."
 
 cat "$TEMP_DIR"/results_tmp_* >> "$RESULTS_FILE" 2>/dev/null
 cat "$TEMP_DIR"/over_5500_tmp_* >> "$OVER_5500_FILE" 2>/dev/null
+cat "$TEMP_DIR"/checker_error_tmp_* >> "$CHECKER_ERRORS_FILE" 2>/dev/null
 cat "$TEMP_DIR"/results_cases_tmp_* > "$TEMP_DIR/results_cases_tmp" 2>/dev/null
 
 # Calcular estadísticas detalladas
@@ -517,6 +592,10 @@ if [ -s "$RESULTS_FILE" ]; then
             MEDIANA="N/A"
         fi
 
+        # Contar errores de verificación
+        CHECKER_ERRORS=$(ls "$TEMP_DIR"/checker_errors_tmp_* 2>/dev/null | wc -l)
+        TOTAL_EJECUTADOS=$((COUNT + CHECKER_ERRORS))
+
         # Encontrar el caso con más movimientos
         MAX_MOV=0
         MAX_NUMS=""
@@ -533,7 +612,7 @@ if [ -s "$RESULTS_FILE" ]; then
             fi
         fi
 
-        # Preparar el resumen final con estadísticas detalladas
+        # Preparar el resumen final con estadísticas detalladas y colores
         SUMMARY="
 ═══════════════════════════════════════════════════════════
                         RESUMEN FINAL
@@ -546,16 +625,18 @@ if [ -s "$RESULTS_FILE" ]; then
    Desviación del objetivo (5500): $((MAX_VAL - 5500))
 
 📊 RENDIMIENTO:
-   Casos totales ejecutados:       $COUNT
+   Casos totales ejecutados:       $TOTAL_EJECUTADOS
+   Casos válidos (checker OK):     $COUNT ($(awk "BEGIN {printf \"%.1f\", $COUNT*100/$TOTAL_EJECUTADOS}")%)
+   Casos con errores (checker KO): $CHECKER_ERRORS ($(awk "BEGIN {printf \"%.1f\", $CHECKER_ERRORS*100/$TOTAL_EJECUTADOS}")%)
    Casos que superan 5500 ops:     $OVER_5500 ($(awk "BEGIN {printf \"%.1f\", $OVER_5500*100/$COUNT}")%)
    Casos dentro del objetivo:      $((COUNT - OVER_5500)) ($(awk "BEGIN {printf \"%.1f\", (($COUNT - $OVER_5500)*100/$COUNT)}")%)
 
 ⏱️  TIEMPO:
    Tiempo total de ejecución:      ${TOTAL_TIME}s ($(awk "BEGIN {printf \"%.1f\", $TOTAL_TIME/60}")m)
-   Promedio por caso:              $(if [ $TOTAL_TIME -gt 0 ]; then awk "BEGIN {printf \"%.2f\", $TOTAL_TIME/$COUNT}"; else echo "0.00"; fi)s
-   Throughput:                     $(if [ $TOTAL_TIME -gt 0 ]; then awk "BEGIN {printf \"%.1f\", $COUNT*60/$TOTAL_TIME}"; else echo "N/A"; fi) casos/min
+   Promedio por caso válido:       $(if [ $TOTAL_TIME -gt 0 ] && [ $COUNT -gt 0 ]; then awk "BEGIN {printf \"%.2f\", $TOTAL_TIME/$COUNT}"; else echo "0.00"; fi)s
+   Throughput:                     $(if [ $TOTAL_TIME -gt 0 ] && [ $COUNT -gt 0 ]; then awk "BEGIN {printf \"%.1f\", $COUNT*60/$TOTAL_TIME}"; else echo "N/A"; fi) casos/min
 
-📈 DISTRIBUCIÓN POR RANGOS:
+📈 DISTRIBUCIÓN POR RANGOS (solo casos válidos):
    ≤ 100 operaciones:              ${DISTRIBUTION[0]} casos
    101-500 operaciones:            ${DISTRIBUTION[1]} casos
    501-1000 operaciones:           ${DISTRIBUTION[2]} casos
@@ -581,22 +662,131 @@ if [ -s "$RESULTS_FILE" ]; then
         cat "$RESULTS_FILE" >> temp_results
         mv temp_results "$RESULTS_FILE"
 
-        # Mostrar resumen en pantalla
+        # Mostrar resumen en pantalla con colores
         echo ""
         print_header "📈 RESUMEN DE RESULTADOS"
-        echo -e "$SUMMARY"
+        echo ""
+
+        # Mostrar resumen con colores y formato mejorado
+        echo -e "${CYAN}${BOLD}═══════════════════════════════════════════════════════════${NC}"
+        echo -e "${CYAN}${BOLD}                        RESUMEN FINAL${NC}"
+        echo -e "${CYAN}${BOLD}═══════════════════════════════════════════════════════════${NC}"
+        echo ""
+
+        # Estadísticas básicas
+        echo -e "${YELLOW}${BOLD}🎯 ESTADÍSTICAS BÁSICAS:${NC}"
+        echo -e "   ${BOLD}Media de operaciones:${NC}           ${MAGENTA}${BOLD}$MEDIA${NC}"
+        echo -e "   ${BOLD}Mediana:${NC}                        ${MAGENTA}${BOLD}$MEDIANA${NC}"
+        echo -e "   ${BOLD}Valor mínimo:${NC}                   ${GREEN}${BOLD}$MIN_VAL${NC}"
+        echo -e "   ${BOLD}Valor máximo:${NC}                   ${RED}${BOLD}$MAX_VAL${NC}"
+        if [ $((MAX_VAL - 5500)) -gt 0 ]; then
+            echo -e "   ${BOLD}Desviación del objetivo (5500):${NC} ${RED}${BOLD}+$((MAX_VAL - 5500))${NC}"
+        else
+            echo -e "   ${BOLD}Desviación del objetivo (5500):${NC} ${GREEN}${BOLD}$((MAX_VAL - 5500))${NC}"
+        fi
+        echo ""
+
+        # Rendimiento
+        echo -e "${BLUE}${BOLD}📊 RENDIMIENTO:${NC}"
+        echo -e "   ${BOLD}Casos totales ejecutados:${NC}       ${WHITE}${BOLD}$TOTAL_EJECUTADOS${NC}"
+
+        valid_percentage=$(awk "BEGIN {printf \"%.0f\", $COUNT*100/$TOTAL_EJECUTADOS}")
+        if [ "$valid_percentage" -ge 95 ]; then
+            echo -e "   ${BOLD}Casos válidos (checker OK):${NC}     ${GREEN}${BOLD}$COUNT${NC} (${GREEN}${BOLD}${valid_percentage}%${NC})"
+        elif [ "$valid_percentage" -ge 80 ]; then
+            echo -e "   ${BOLD}Casos válidos (checker OK):${NC}     ${YELLOW}${BOLD}$COUNT${NC} (${YELLOW}${BOLD}${valid_percentage}%${NC})"
+        else
+            echo -e "   ${BOLD}Casos válidos (checker OK):${NC}     ${RED}${BOLD}$COUNT${NC} (${RED}${BOLD}${valid_percentage}%${NC})"
+        fi
+
+        if [ $CHECKER_ERRORS -gt 0 ]; then
+            error_percentage=$(awk "BEGIN {printf \"%.1f\", $CHECKER_ERRORS*100/$TOTAL_EJECUTADOS}")
+            echo -e "   ${BOLD}Casos con errores (checker KO):${NC} ${RED}${BOLD}$CHECKER_ERRORS${NC} (${RED}${BOLD}${error_percentage}%${NC})"
+        else
+            echo -e "   ${BOLD}Casos con errores (checker KO):${NC} ${GREEN}${BOLD}0${NC} (${GREEN}${BOLD}0.0%${NC})"
+        fi
+
+        over5500_percentage=$(awk "BEGIN {printf \"%.1f\", $OVER_5500*100/$COUNT}")
+        if [ $OVER_5500 -gt 0 ]; then
+            echo -e "   ${BOLD}Casos que superan 5500 ops:${NC}     ${RED}${BOLD}$OVER_5500${NC} (${RED}${BOLD}${over5500_percentage}%${NC})"
+        else
+            echo -e "   ${BOLD}Casos que superan 5500 ops:${NC}     ${GREEN}${BOLD}0${NC} (${GREEN}${BOLD}0.0%${NC})"
+        fi
+
+        within_target=$((COUNT - OVER_5500))
+        within_percentage=$(awk "BEGIN {printf \"%.0f\", (($COUNT - $OVER_5500)*100/$COUNT)}")
+        if [ "$within_percentage" -ge 95 ]; then
+            echo -e "   ${BOLD}Casos dentro del objetivo:${NC}      ${GREEN}${BOLD}$within_target${NC} (${GREEN}${BOLD}${within_percentage}%${NC})"
+        elif [ "$within_percentage" -ge 80 ]; then
+            echo -e "   ${BOLD}Casos dentro del objetivo:${NC}      ${YELLOW}${BOLD}$within_target${NC} (${YELLOW}${BOLD}${within_percentage}%${NC})"
+        else
+            echo -e "   ${BOLD}Casos dentro del objetivo:${NC}      ${RED}${BOLD}$within_target${NC} (${RED}${BOLD}${within_percentage}%${NC})"
+        fi
+        echo ""
+
+        # Tiempo
+        echo -e "${MAGENTA}${BOLD}⏱️  TIEMPO:${NC}"
+        time_minutes=$(awk "BEGIN {printf \"%.1f\", $TOTAL_TIME/60}")
+        echo -e "   ${BOLD}Tiempo total de ejecución:${NC}      ${CYAN}${BOLD}${TOTAL_TIME}s${NC} (${CYAN}${BOLD}${time_minutes}m${NC})"
+
+        avg_time=$(if [ $TOTAL_TIME -gt 0 ] && [ $COUNT -gt 0 ]; then awk "BEGIN {printf \"%.2f\", $TOTAL_TIME/$COUNT}"; else echo "0.00"; fi)
+        echo -e "   ${BOLD}Promedio por caso válido:${NC}       ${CYAN}${BOLD}${avg_time}s${NC}"
+
+        throughput=$(if [ $TOTAL_TIME -gt 0 ] && [ $COUNT -gt 0 ]; then awk "BEGIN {printf \"%.1f\", $COUNT*60/$TOTAL_TIME}"; else echo "N/A"; fi)
+        echo -e "   ${BOLD}Throughput:${NC}                     ${CYAN}${BOLD}${throughput}${NC} ${BOLD}casos/min${NC}"
+        echo ""
+
+        # Distribución
+        echo -e "${GREEN}${BOLD}📈 DISTRIBUCIÓN POR RANGOS${NC} ${BOLD}(solo casos válidos):${NC}"
+        echo -e "   ${BOLD}≤ 100 operaciones:${NC}              ${GREEN}${BOLD}${DISTRIBUTION[0]}${NC} ${BOLD}casos${NC}"
+        echo -e "   ${BOLD}101-500 operaciones:${NC}            ${GREEN}${BOLD}${DISTRIBUTION[1]}${NC} ${BOLD}casos${NC}"
+        echo -e "   ${BOLD}501-1000 operaciones:${NC}           ${GREEN}${BOLD}${DISTRIBUTION[2]}${NC} ${BOLD}casos${NC}"
+        echo -e "   ${BOLD}1001-2000 operaciones:${NC}          ${YELLOW}${BOLD}${DISTRIBUTION[3]}${NC} ${BOLD}casos${NC}"
+        echo -e "   ${BOLD}2001-3000 operaciones:${NC}          ${YELLOW}${BOLD}${DISTRIBUTION[4]}${NC} ${BOLD}casos${NC}"
+        echo -e "   ${BOLD}3001-4000 operaciones:${NC}          ${YELLOW}${BOLD}${DISTRIBUTION[5]}${NC} ${BOLD}casos${NC}"
+        echo -e "   ${BOLD}4001-5000 operaciones:${NC}          ${YELLOW}${BOLD}${DISTRIBUTION[6]}${NC} ${BOLD}casos${NC}"
+        echo -e "   ${BOLD}5001-5500 operaciones:${NC}          ${MAGENTA}${BOLD}${DISTRIBUTION[7]}${NC} ${BOLD}casos${NC}"
+        if [ ${DISTRIBUTION[8]} -gt 0 ]; then
+            echo -e "   ${BOLD}5501-6000 operaciones:${NC}          ${RED}${BOLD}${DISTRIBUTION[8]}${NC} ${BOLD}casos${NC}"
+        else
+            echo -e "   ${BOLD}5501-6000 operaciones:${NC}          ${GREEN}${BOLD}${DISTRIBUTION[8]}${NC} ${BOLD}casos${NC}"
+        fi
+        if [ ${DISTRIBUTION[9]} -gt 0 ]; then
+            echo -e "   ${BOLD}6001-7000 operaciones:${NC}          ${RED}${BOLD}${DISTRIBUTION[9]}${NC} ${BOLD}casos${NC}"
+        else
+            echo -e "   ${BOLD}6001-7000 operaciones:${NC}          ${GREEN}${BOLD}${DISTRIBUTION[9]}${NC} ${BOLD}casos${NC}"
+        fi
+        if [ ${DISTRIBUTION[10]} -gt 0 ]; then
+            echo -e "   ${BOLD}> 7000 operaciones:${NC}             ${RED}${BOLD}${DISTRIBUTION[10]}${NC} ${BOLD}casos${NC}"
+        else
+            echo -e "   ${BOLD}> 7000 operaciones:${NC}             ${GREEN}${BOLD}${DISTRIBUTION[10]}${NC} ${BOLD}casos${NC}"
+        fi
+        echo ""
+        echo -e "${CYAN}${BOLD}═══════════════════════════════════════════════════════════${NC}"
+        echo ""
 
         # Información adicional
-        print_header "📁 Archivos generados:"
-        print_success "Resultados principales: $RESULTS_FILE"
-        print_success "Peor caso guardado en: $MAX_CASE_FILE"
+        print_header "📁 Archivos generados en: $LOGS_DIR"
+        print_success "├── results.txt (estadísticas principales)"
+        print_success "├── max_case.txt (peor caso detectado)"
+
+        if [ $CHECKER_ERRORS -gt 0 ]; then
+            print_error "├── checker_errors.txt (errores de verificación)"
+            print_warning "Se encontraron $CHECKER_ERRORS casos con errores de verificación"
+            print_info "Para revisar errores: cat $CHECKER_ERRORS_FILE"
+        else
+            print_success "¡Perfecto! Todos los casos pasaron la verificación del checker"
+        fi
 
         if [ $OVER_5500 -gt 0 ]; then
-            print_warning "Casos problemáticos: $OVER_5500_FILE"
+            print_warning "└── cases_over_5500.txt (casos problemáticos)"
             print_info "Para revisar casos >5500: cat $OVER_5500_FILE"
         else
             print_success "¡Excelente! Ningún caso superó 5500 operaciones"
         fi
+
+        echo ""
+        print_info "Todos los archivos están organizados en: $LOGS_DIR"
 
     else
         print_error "No se pudieron calcular estadísticas"
@@ -610,5 +800,6 @@ rm -rf "$TEMP_DIR" 2>/dev/null
 
 echo ""
 print_header "🎉 Análisis completado exitosamente"
-print_info "Directorio temporal $TEMP_DIR eliminado"
+print_success "Todos los resultados guardados en: $LOGS_DIR"
+print_info "Directorio temporal eliminado"
 echo ""

@@ -6,13 +6,23 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 13:28:04 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/04 12:34:14 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/06 17:42:26 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pushswap.h"
 
-t_stack	*initialize_empty_stack(char id)
+/**
+ * @brief Allocates and initializes an empty stack.
+ *
+ * This function creates a new stack structure by allocating memory for it.
+ * The stack is initialized with no elements (top_element is set to NULL).
+ *
+ * @param id Character identifier for the stack ('A' or 'B').
+ * @return A pointer to the newly created stack, or NULL if memory allocation
+ * fails.
+ */
+static t_stack	*initialize_empty_stack(char id)
 {
 	t_stack	*stack;
 
@@ -25,7 +35,20 @@ t_stack	*initialize_empty_stack(char id)
 	return (stack);
 }
 
-t_stack	*initialize_stack(int top_value, char id)
+/**
+ * @brief Initializes a stack with a single element at the top.
+ *
+ * This function allocates memory for a new stack and its top element.
+ * The top element is initialized with the provided value. If any memory
+ * allocation fails, the function ensures proper cleanup and returns NULL.
+ *
+ * @param top_value The value to initialize the top element of the stack with.
+ * @param id Character identifier for the stack ('A' or 'B').
+ *
+ * @return A pointer to the newly created stack, or NULL if memory allocation
+ * fails.
+ */
+static t_stack	*initialize_stack(int top_value, char id)
 {
 	t_stack	*stack;
 
@@ -61,25 +84,19 @@ t_stack	*populate_a_stack(int argc, char *argv[])
 	t_blist	*node;
 
 	if (argc < 2)
-		error(NULL,NULL,NULL);
+		error(NULL, NULL, NULL);
 	i = 0;
-	stack_a = NULL;
+	value = is_arg_correct(argc, argv, i++, NULL);
+	stack_a = initialize_stack(value, 'A');
+	if (!stack_a)
+		return (NULL);
 	while (i < argc)
 	{
 		value = is_arg_correct(argc, argv, i++, stack_a);
-		if (i == 1)
-		{
-			stack_a = initialize_stack(value, 'A');
-			if (!stack_a)
-				return (NULL);
-		}
-		else
-		{
-			node = create_node(value);
-			if (!node)
-				error(stack_a, NULL, NULL);
-			blstadd_back(&(stack_a->top_element), node);
-		}
+		node = create_node(value);
+		if (!node)
+			error(stack_a, NULL, NULL);
+		blstadd_back(&(stack_a->top_element), node);
 	}
 	stack_a->size = i;
 	return (stack_a);

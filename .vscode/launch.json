@@ -9,7 +9,7 @@
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${fileDirname}/${fileBasenameNoExtension}.out", // Adjust this to match your output executable
-			"args": ["2", "6", "3", "10", "1", "9", "7", "8", "5", "4"],
+			"args": ["9", "3", "5", "8", "7", "0", "2", "10", "6", "4"],
 
 			"stopAtEntry": false,
 			"cwd": "${workspaceFolder}",

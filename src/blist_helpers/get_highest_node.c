@@ -6,12 +6,11 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 12:09:48 by pablo             #+#    #+#             */
-/*   Updated: 2025/05/27 20:10:10 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/06 18:27:53 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pushswap.h"
-
 
 int	get_highest_node(t_blist *lst)
 {
