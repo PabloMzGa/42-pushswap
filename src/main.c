@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 10:09:50 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/04 13:38:49 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/06 20:35:46 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,12 @@ int	main(int argc, char *argv[])
 	stack_a = populate_a_stack(ft_matrix_len((void **)cleaned_argv),
 			cleaned_argv);
 	ft_matrix_free((void **)cleaned_argv, 0);
+	if(is_stack_sorted(stack_a))
+		return (clean_stack(stack_a), 0);
 	stack_b = initialize_b_stack(stack_a);
 	push_b_algo(stack_a, stack_b);
 	push_a_algo(stack_a, stack_b);
 	clean_stack(stack_a);
 	clean_stack(stack_b);
+	return (0);
 }

@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   arg_check.c                                        :+:      :+:    :+:   */
+/*   arg_check_bonus.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 17:47:52 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/07 11:23:12 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/07 12:48:20 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pushswap.h"
+#include "checker.h"
 
 /**
  * @brief Checks if the given string represents a valid numeric value.
@@ -78,6 +78,8 @@ char	**clean_argv(int argc, char *argv[])
 	char	**splitted;
 	int		i;
 
+	if (argc < 2)
+		return (NULL);
 	i = 2;
 	clean = ft_strjoin(argv[1], " ");
 	if (!clean)
@@ -104,13 +106,13 @@ int	is_arg_correct(int argc, char *argv[], int i, t_stack *stack_a)
 	if (check_num(argv[i]) || check_repeated_number(argc, argv, i + 1))
 	{
 		ft_matrix_free((void **)argv, 0);
-		error(stack_a, NULL, NULL);
+		error(stack_a, NULL);
 	}
 	tmp = ft_atol(argv[i]);
 	if (tmp > INT_MAX || tmp < INT_MIN)
 	{
 		ft_matrix_free((void **)argv, 0);
-		error(stack_a, NULL, NULL);
+		error(stack_a, NULL);
 	}
 	return ((int)tmp);
 }

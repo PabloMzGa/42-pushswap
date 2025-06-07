@@ -6,39 +6,11 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 01:54:05 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/06 18:49:33 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/06 20:34:04 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pushswap.h"
-
-/**
- * @brief Checks if a stack is sorted in ascending order (from top to bottom)
- *
- * This function traverses a stack from top to bottom and verifies that each
- * element is less than the next element, ensuring the stack is
- * sorted in ascending order.
- *
- * @param stack Pointer to the stack structure to check
- * @return 1 if the stack is sorted in ascending order, 0 otherwise
- */
-static int	is_stack_sorted(t_stack *stack)
-{
-	t_blist	*current;
-
-	if (!stack || !stack->top_element)
-		return (1);
-	if (stack->size < 1)
-		return (1);
-	current = stack->top_element;
-	while (current && current->next)
-	{
-		if (current->value > current->next->value)
-			return (0);
-		current = current->next;
-	}
-	return (1);
-}
 
 static void	sort_3(t_stack *stack)
 {

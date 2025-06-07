@@ -9,7 +9,7 @@
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${fileDirname}/${fileBasenameNoExtension}.out", // Adjust this to match your output executable
-			"args": ["9", "3", "5", "8", "7", "0", "2", "10", "6", "4"],
+			"args": ["1", "2", "3"], // Example arguments, adjust as needed
 
 			"stopAtEntry": false,
 			"cwd": "${workspaceFolder}",
@@ -30,6 +30,26 @@
 		}, */
 			],
 			"preLaunchTask": "build all C and A files"
+		},
+		{
+			"name": "Build and debug bonus (checker)",
+			"type": "cppdbg",
+			"request": "launch",
+			"program": "${workspaceFolder}/bonus/checker.out",
+			"args": ["8 9 10 3 7 0 4 2 6 5" ], // Example arguments, adjust as needed
+			"stopAtEntry": false,
+			"cwd": "${workspaceFolder}",
+			"environment": [],
+			"externalConsole": false,
+			"MIMode": "gdb",
+			"setupCommands": [
+				{
+					"description": "Enable pretty-printing for gdb",
+					"text": "-enable-pretty-printing",
+					"ignoreFailures": true
+				}
+			],
+			"preLaunchTask": "build bonus files"
 		}
 	]
 }

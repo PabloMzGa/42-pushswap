@@ -20,6 +20,25 @@
 		"pipex.h": "c",
 		"errno.h": "c",
 		"float.h": "c",
-		"pushswap.h": "c"
+		"pushswap.h": "c",
+		"functional": "c",
+		"concepts": "c",
+		"deque": "c",
+		"list": "c",
+		"string": "c",
+		"unordered_map": "c",
+		"vector": "c",
+		"memory": "c",
+		"optional": "c",
+		"fstream": "c",
+		"istream": "c",
+		"ostream": "c",
+		"sstream": "c",
+		"streambuf": "c",
+		"regex": "c",
+		"tuple": "c",
+		"utility": "c",
+		"variant": "c",
+		"checker.h": "c"
 	}
 }

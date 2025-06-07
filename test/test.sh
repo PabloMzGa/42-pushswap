@@ -289,25 +289,55 @@ ejecutar_prueba() {
         return 1
     fi
 
-    # Crear un array con todos los números en el rango
-    local -a numeros
-    for ((i=min; i<=max; i++)); do
-        numeros+=($i)
+    # Algoritmo optimizado para generar números únicos aleatorios
+    local -A numeros_usados
+    local -a numeros_seleccionados
+    local intentos=0
+    local max_intentos=$((cantidad * 10))  # Límite de seguridad
+
+    # Generar números únicos aleatoriamente (más eficiente para rangos grandes)
+    while [ ${#numeros_seleccionados[@]} -lt $cantidad ] && [ $intentos -lt $max_intentos ]; do
+        local num=$((RANDOM % rango + min))
+
+        # Si el número no ha sido usado, agregarlo
+        if [ -z "${numeros_usados[$num]}" ]; then
+            numeros_usados[$num]=1
+            numeros_seleccionados+=($num)
+        fi
+
+        intentos=$((intentos + 1))
     done
 
-    # Mezclar el array (algoritmo Fisher-Yates)
-    for ((i=rango-1; i>0; i--)); do
-        j=$((RANDOM % (i+1)))
-        # Intercambiar elementos
-        local temp=${numeros[i]}
-        numeros[i]=${numeros[j]}
-        numeros[j]=$temp
-    done
+    # Si no se pudieron generar suficientes números únicos, usar método alternativo
+    if [ ${#numeros_seleccionados[@]} -lt $cantidad ]; then
+        # Fallback: generar array completo solo si es necesario y el rango es pequeño
+        if [ $rango -le 10000 ]; then
+            local -a numeros
+            for ((i=min; i<=max; i++)); do
+                numeros+=($i)
+            done
+
+            # Mezclar usando Fisher-Yates parcial (solo lo necesario)
+            for ((i=0; i<cantidad; i++)); do
+                j=$((RANDOM % (rango - i) + i))
+                # Intercambiar elementos
+                local temp=${numeros[$i]}
+                numeros[$i]=${numeros[$j]}
+                numeros[$j]=$temp
+            done
+
+            # Tomar solo los primeros 'cantidad' elementos
+            numeros_seleccionados=("${numeros[@]:0:$cantidad}")
+        else
+            echo "Error: No se pudieron generar $cantidad números únicos en el rango $min-$max (rango demasiado grande)" >&2
+            return 1
+        fi
+    fi
 
     # Crear un string con los números generados
     local NUMS=""
-    for ((i=0; i<cantidad; i++)); do
-        NUMS+="${numeros[i]} "
+    for num in "${numeros_seleccionados[@]}"; do
+        NUMS+="$num "
     done
 
     # Ejecutar push_swap con los números y capturar la salida

@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   swap.c                                             :+:      :+:    :+:   */
+/*   swap_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 20:56:44 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/07 13:08:43 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/07 13:37:47 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pushswap.h"
+#include "checker.h"
 
 /**
  * @brief Swaps the first two elements of a stack.
@@ -51,25 +51,25 @@ void	swap(t_stack *stack_a, t_stack *stack_b)
 	if (stack_a && !stack_b)
 	{
 		if (stack_a->size < 2)
-			error(stack_a, stack_b, NULL);
+			ko(stack_a, stack_b);
 		swap_stack(stack_a);
 		write(1, "sa\n", 3);
 	}
 	else if (!stack_a && stack_b)
 	{
 		if (stack_b->size < 2)
-			error(stack_a, stack_b, NULL);
+			ko(stack_a, stack_b);
 		swap_stack(stack_b);
 		write(1, "sb\n", 3);
 	}
 	else if (stack_a && stack_b)
 	{
 		if (stack_a->size < 2 || stack_b->size < 2)
-			error(stack_a, stack_b, NULL);
+			ko(stack_a, stack_b);
 		swap_stack(stack_a);
 		swap_stack(stack_b);
 		write(1, "ss\n", 3);
 	}
 	else
-		error(stack_a, stack_b, NULL);
+		ko(stack_a, stack_b);
 }

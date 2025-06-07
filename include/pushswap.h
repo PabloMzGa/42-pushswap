@@ -6,7 +6,7 @@
 /*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:10:32 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/06 18:56:33 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/07 13:48:07 by pablo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,6 +209,18 @@ int								get_lowest_distance(int n, t_stack *stack_b,
 int								get_optimized_cost(int a_mov, int b_mov);
 
 /**
+ * @brief Checks if a stack is sorted in ascending order (from top to bottom)
+ *
+ * This function traverses a stack from top to bottom and verifies that each
+ * element is less than the next element, ensuring the stack is
+ * sorted in ascending order.
+ *
+ * @param stack Pointer to the stack structure to check
+ * @return 1 if the stack is sorted in ascending order, 0 otherwise
+ */
+int								is_stack_sorted(t_stack *stack);
+
+/**
  * @brief Moves all elements from stack_b to stack_a using a cost-based
  * algorithm.
  *
@@ -253,20 +265,6 @@ void							push_a_algo(t_stack *stack_a, t_stack *stack_b);
  * @param stack_b Pointer to the destination stack
  */
 void							push_b_algo(t_stack *stack_a, t_stack *stack_b);
-
-/**
- * @brief Performs pre-processing optimization using swap operations
- *
- * This function attempts to optimize the initial state of stack A by
- * strategically using swap operations to bring cheaper-to-move elements
- * to the top of the stack. This can significantly reduce the total number
- * of operations needed for large datasets.
- *
- * @param stack_a Pointer to stack A
- * @param stack_b Pointer to stack B (initially empty)
- */
-void							preprocess_with_swap(t_stack *stack_a,
-									t_stack *stack_b);
 
 /**
  * @brief Searches for the closest higher value than the given number in the
@@ -405,21 +403,6 @@ t_stack							*populate_a_stack(int argc, char *argv[]);
  */
 void							blstadd_back(t_blist **lst, t_blist *new);
 
-/**
- * @brief Adds a new element to the front of a doubly linked list.
- *
- * This function inserts a new element at the beginning of a doubly linked list.
- * It updates the `next` pointer of the new element to point to the current head
- * of the list and updates the `previous` pointer of the current head to point
- * back to the new element. Finally, it updates the head of the list to the new
- * element.
- *
- * @param lst A pointer to the pointer of the head of the doubly linked list.
- *            If the list is empty, *lst should be NULL.
- * @param new A pointer to the new element to be added to the list. The `new`
- *            element must not be NULL and should be properly initialized.
- */
-void							blstadd_front(t_blist **lst, t_blist *new);
 
 /**
  * @brief Creates a new node for a doubly linked list.
@@ -505,37 +488,21 @@ int								get_bottom_distance(int index, t_stack *stack);
  */
 int								get_top_distance(int index, t_stack *stack);
 
-/**
- * @brief Builds expected order links for optimization
- *
- * This function creates the expected_prev and expected_next links for all
- * nodes in the given stack. These links point to the nodes that should
- * come immediately before and after each node in the final sorted order.
- * This pre-computation allows for O(1) checking of whether a node is
- * well-positioned in its sequence.
- *
- * @param stack_a Pointer to stack A containing all the nodes to process
- */
-void							build_expected_order_links(t_stack *stack_a);
-
 ////////////////////////////////////////////////////////////////////////////////
 /////////////////////////// STACK OPERATIONS ///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
- * @brief Performs a swap operation on one or both stacks and writes the
- *        corresponding operation name to the standard output.
+ * @brief Performs a swap operation on one or both stacks.
+ *
+ * Swaps the first two elements at the top of the specified stack(s).
+ * - If only stack_a is provided, swaps stack_a and writes "sa\n".
+ * - If only stack_b is provided, swaps stack_b and writes "sb\n".
+ * - If both are provided, swaps both and writes "ss\n".
+ * - If neither or if stack(s) have <2 elements, calls error handler.
  *
  * @param stack_a Pointer to the first stack (can be NULL).
  * @param stack_b Pointer to the second stack (can be NULL).
- *
- * The function performs the following actions:
- * - If only `stack_a` is provided, it swaps the top two elements of `stack_a`
- *   and writes "sa\n" to the standard output.
- * - If only `stack_b` is provided, it swaps the top two elements of `stack_b`
- *   and writes "sb\n" to the standard output.
- * - If both `stack_a` and `stack_b` are provided, it swaps the top two elements
- *   of both stacks and writes "ss\n" to the standard output.
  */
 void							swap(t_stack *stack_a, t_stack *stack_b);
 
