@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_a.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 12:01:39 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/06 19:33:26 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/09 21:59:52 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void	push_a_algo(t_stack *stack_a, t_stack *stack_b)
 				apply_a_rot(stack_a, cost, &cost->dest_mov);
 		}
 		push(stack_a, stack_b, cost, 'a');
-		free(cost);
+		ft_free((void **)&cost);
 	}
 	final_sort_stack_a(stack_a);
 }

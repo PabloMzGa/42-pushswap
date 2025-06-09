@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   checker.h                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 11:38:01 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/07 13:42:30 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/09 22:03:00 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,7 +192,6 @@ void							blstadd_back(t_blist **lst, t_blist *new);
  */
 t_blist							*create_node(int n);
 
-
 /**
  * @brief Retrieves the last node in a linked list.
  *
@@ -209,6 +208,86 @@ t_blist							*get_last_node(t_blist *lst);
 ////////////////////////////////////////////////////////////////////////////////
 /////////////////////////// STACK OPERATIONS ///////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
+
+/**
+ * @brief Executes stack operations based on instructions from standard input.
+ *
+ * Reads instructions line by line from STDIN and executes the corresponding
+ * stack operation on `stack_a` and `stack_b`. Supported instructions start
+ * with 's' (swap), 'p' (push), and 'r' (rotate). On invalid instruction,
+ * frees memory, calls the error handler, and exits. Frees memory for each
+ * instruction read.
+ *
+ * @param stack_a Pointer to the first stack.
+ * @param stack_b Pointer to the second stack.
+ */
+void	execute_instructions(t_stack *stack_a, t_stack *stack_b);
+
+/**
+ * Executes a swap operation on the given stacks based on the instruction.
+ *
+ * If the instruction is invalid, the function frees the instruction and calls
+ * the error handler.
+ *
+ * @param stack_a     Pointer to stack A.
+ * @param stack_b     Pointer to stack B.
+ * @param instruction Swap instruction ("sa", "sb", or "ss").
+ *
+ * - "sa": swap top two of stack A.
+ * - "sb": swap top two of stack B.
+ * - "ss": swap top two of both stacks.
+ * On invalid instruction, frees and calls error handler.
+ */
+void							execute_swap(t_stack *stack_a, t_stack *stack_b,
+									char *instruction);
+
+/**
+ * @brief Executes a push operation between two stacks based on the
+ *        given instruction.
+ *
+ * Interprets the instruction string to determine which stack should
+ * receive the pushed element. If the instruction is 'pa', pushes from
+ * stack_b to stack_a. If 'pb', pushes from stack_a to stack_b.
+ *
+ * If the instruction is invalid, the function frees the instruction and calls
+ * the error handler.
+ *
+ * @param stack_a Pointer to the first stack (t_stack).
+ * @param stack_b Pointer to the second stack (t_stack).
+ * @param instruction The instruction string ('pa' or 'pb').
+ */
+void							execute_push(t_stack *stack_a, t_stack *stack_b,
+									char *instruction);
+
+/**
+ * Executes rotation or reverse rotation operations on the given stacks
+ * based on the provided instruction string.
+ *
+ * The function determines which operation to perform by inspecting
+ * the characters in the instruction string.
+ *
+ * If the instruction is invalid, the function frees the instruction and calls
+ * the error handler.
+ *
+ * @param stack_a Pointer to the first stack (t_stack).
+ * @param stack_b Pointer to the second stack (t_stack).
+ * @param instruction A string representing the rotation instruction.
+ *
+ *        - "ra": rotate stack_a
+ *
+ *        - "rb": rotate stack_b
+ *
+ *        - "rr": rotate both stack_a and stack_b
+ *
+ *        - "rra": reverse rotate stack_a
+ *
+ *        - "rrb": reverse rotate stack_b
+ *
+ *        - "rrr": reverse rotate both stack_a and stack_b
+ *
+ */
+void							execute_rotations(t_stack *stack_a,
+									t_stack *stack_b, char *instruction);
 
 /**
  * @brief Performs a swap operation on one or both stacks.
@@ -245,7 +324,8 @@ void							swap(t_stack *stack_a, t_stack *stack_b);
  * @note If an invalid direction is provided, the function calls the `error`
  *       function.
  */
-void	push(t_stack *stack_a, t_stack *stack_b, char dir);
+void							push(t_stack *stack_a, t_stack *stack_b,
+									char dir);
 
 /**
  * @brief Rotates the elements of one or both stacks upwards.
@@ -338,7 +418,7 @@ void							error(t_stack *stack_a, t_stack *stack_b);
  * @param stack_a Pointer to the first stack to be cleaned.
  * @param stack_b Pointer to the second stack to be cleaned.
  */
-void	ko(t_stack *stack_a, t_stack *stack_b);
+void							ko(t_stack *stack_a, t_stack *stack_b);
 
 /**
  * @brief Cleans up both stack_a and stack_b, then prints "OK" to stdout.
@@ -350,6 +430,6 @@ void	ko(t_stack *stack_a, t_stack *stack_b);
  * @param stack_a Pointer to the first stack to be cleaned.
  * @param stack_b Pointer to the second stack to be cleaned.
  */
-void	ok(t_stack *stack_a, t_stack *stack_b);
+void							ok(t_stack *stack_a, t_stack *stack_b);
 
 #endif

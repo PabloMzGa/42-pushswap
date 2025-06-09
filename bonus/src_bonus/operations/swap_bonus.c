@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   swap_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 20:56:44 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/07 13:37:47 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/09 18:47:28 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,12 @@ void	swap(t_stack *stack_a, t_stack *stack_b)
 		if (stack_a->size < 2)
 			ko(stack_a, stack_b);
 		swap_stack(stack_a);
-		write(1, "sa\n", 3);
 	}
 	else if (!stack_a && stack_b)
 	{
 		if (stack_b->size < 2)
 			ko(stack_a, stack_b);
 		swap_stack(stack_b);
-		write(1, "sb\n", 3);
 	}
 	else if (stack_a && stack_b)
 	{
@@ -68,7 +66,6 @@ void	swap(t_stack *stack_a, t_stack *stack_b)
 			ko(stack_a, stack_b);
 		swap_stack(stack_a);
 		swap_stack(stack_b);
-		write(1, "ss\n", 3);
 	}
 	else
 		ko(stack_a, stack_b);

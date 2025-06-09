@@ -101,7 +101,7 @@ if [ "$min" -gt "$max" ]; then
     exit 1
 fi
 
-# Verificar que push_swap y checker_linux existen
+# Verificar que push_swap y ambos checkers existen
 if [ ! -f "../build/push_swap" ]; then
     print_error "El ejecutable '../build/push_swap' no se encuentra en el directorio build"
     exit 1
@@ -112,8 +112,14 @@ if [ ! -f "./checker_linux" ]; then
     exit 1
 fi
 
+if [ ! -f "./checker" ]; then
+    print_error "El ejecutable './checker' no se encuentra en el directorio test"
+    exit 1
+fi
+
 print_success "Parámetros validados correctamente"
-print_info "Las pruebas incluirán verificación automática con checker_linux"
+print_info "Las pruebas incluirán verificación automática con checker_linux y checker"
+print_info "Se compararán los outputs de ambos checkers para detectar discrepancias"
 
 # Mostrar configuración
 echo ""
@@ -139,6 +145,7 @@ RESULTS_FILE="${LOGS_DIR}/results.txt"
 MAX_CASE_FILE="${LOGS_DIR}/max_case.txt"
 OVER_5500_FILE="${LOGS_DIR}/cases_over_5500.txt"
 CHECKER_ERRORS_FILE="${LOGS_DIR}/checker_errors.txt"
+CHECKER_MISMATCH_FILE="${LOGS_DIR}/checker_mismatches.txt"
 
 print_header "📁 Preparando directorio y archivos de resultados..."
 
@@ -200,6 +207,7 @@ mostrar_progreso() {
     local tiempo_transcurrido=$3
     local casos_5500=$4
     local checker_errors=$5
+    local checker_mismatches=$6
 
     local porcentaje=0
     if [ $total -gt 0 ]; then
@@ -231,8 +239,8 @@ mostrar_progreso() {
     fi
 
     # Mostrar la barra con información detallada
-    printf "\r${CYAN}[${GREEN}%s${CYAN}]${NC} ${BOLD}%3d%%${NC} ${MAGENTA}(%d/%d)${NC} │ ${YELLOW}%s${NC} restante │ ${RED}%d${NC} >5500 │ ${RED}%d${NC} errores" \
-           "$barra" "$porcentaje" "$completadas" "$total" "$tiempo_restante" "$casos_5500" "$checker_errors"
+    printf "\r${CYAN}[${GREEN}%s${CYAN}]${NC} ${BOLD}%3d%%${NC} ${MAGENTA}(%d/%d)${NC} │ ${YELLOW}%s${NC} restante │ ${RED}%d${NC} >5500 │ ${RED}%d${NC} errores │ ${YELLOW}%d${NC} mismatches" \
+           "$barra" "$porcentaje" "$completadas" "$total" "$tiempo_restante" "$casos_5500" "$checker_errors" "$checker_mismatches"
 }
 
 # Función para mostrar estadísticas en tiempo real
@@ -349,14 +357,51 @@ ejecutar_prueba() {
         LINE_COUNT=$((LINE_COUNT - 1))
     fi
 
-    # Verificar la corrección con checker_linux
+    # Verificar la corrección con ambos checkers
+    local CHECKER_LINUX_RESULT=""
     local CHECKER_RESULT=""
     local CHECKER_STATUS="OK"
+    local MISMATCH_FOUND=false
+
     if [ -n "$PUSH_SWAP_OUTPUT" ]; then
-        CHECKER_RESULT=$(echo "$PUSH_SWAP_OUTPUT" | ./checker_linux $NUMS 2>/dev/null)
+        # Ejecutar checker_linux
+        CHECKER_LINUX_RESULT=$(echo "$PUSH_SWAP_OUTPUT" | ./checker_linux $NUMS 2>/dev/null)
+        # Limpiar posibles espacios o caracteres extra
+        CHECKER_LINUX_RESULT=$(echo "$CHECKER_LINUX_RESULT" | tr -d '\n\r\t ')
+
+        # Ejecutar checker
+        CHECKER_RESULT=$(echo "$PUSH_SWAP_OUTPUT" | ./checker $NUMS 2>/dev/null)
         # Limpiar posibles espacios o caracteres extra
         CHECKER_RESULT=$(echo "$CHECKER_RESULT" | tr -d '\n\r\t ')
-        if [ "$CHECKER_RESULT" != "OK" ]; then
+
+        # Comparar los resultados de ambos checkers
+        if [ "$CHECKER_LINUX_RESULT" != "$CHECKER_RESULT" ]; then
+            MISMATCH_FOUND=true
+            # Guardar el caso con discrepancia
+            local mismatch_file="$TEMP_DIR/mismatch_tmp_$r"
+            {
+                echo "┌─────────────────────────────────────────┐"
+                echo "│       DISCREPANCIA ENTRE CHECKERS #$r"
+                echo "└─────────────────────────────────────────┘"
+                echo "RESULTADO CHECKER_LINUX: '$CHECKER_LINUX_RESULT'"
+                echo "RESULTADO CHECKER:       '$CHECKER_RESULT'"
+                echo "OPERACIONES: $LINE_COUNT"
+                echo "SECUENCIA: $NUMS"
+                echo "COMANDO: ../build/push_swap $NUMS"
+                echo ""
+                echo "MOVIMIENTOS EJECUTADOS:"
+                echo "$PUSH_SWAP_OUTPUT"
+                echo ""
+                echo "═══════════════════════════════════════════════════════════"
+                echo ""
+            } > "$mismatch_file"
+
+            # Marcar el mismatch para el conteo
+            echo "1" >> "$TEMP_DIR/checker_mismatches_tmp_$r"
+        fi
+
+        # Verificar si alguno de los checkers falló
+        if [ "$CHECKER_LINUX_RESULT" != "OK" ] || [ "$CHECKER_RESULT" != "OK" ]; then
             CHECKER_STATUS="ERROR"
             # Guardar el caso que falló la verificación
             local checker_error_file="$TEMP_DIR/checker_error_tmp_$r"
@@ -364,10 +409,11 @@ ejecutar_prueba() {
                 echo "┌─────────────────────────────────────────┐"
                 echo "│           ERROR DE VERIFICACIÓN #$r"
                 echo "└─────────────────────────────────────────┘"
-                echo "RESULTADO CHECKER: $CHECKER_RESULT"
+                echo "RESULTADO CHECKER_LINUX: '$CHECKER_LINUX_RESULT'"
+                echo "RESULTADO CHECKER:       '$CHECKER_RESULT'"
                 echo "OPERACIONES: $LINE_COUNT"
                 echo "SECUENCIA: $NUMS"
-                echo "COMANDO: ../build/push_swap $NUMS | ./checker_linux $NUMS"
+                echo "COMANDO: ../build/push_swap $NUMS"
                 echo ""
                 echo "MOVIMIENTOS EJECUTADOS:"
                 echo "$PUSH_SWAP_OUTPUT"

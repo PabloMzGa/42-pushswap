@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pushswap.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:10:32 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/07 13:48:07 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/09 18:57:50 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -402,7 +402,6 @@ t_stack							*populate_a_stack(int argc, char *argv[]);
  * element. If either `lst` or `new` is NULL, the function does nothing.
  */
 void							blstadd_back(t_blist **lst, t_blist *new);
-
 
 /**
  * @brief Creates a new node for a doubly linked list.

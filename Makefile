@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: pablo <pablo@student.42.fr>                +#+  +:+       +#+         #
+#    By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/20 14:34:30 by pabmart2          #+#    #+#              #
-#    Updated: 2025/06/07 14:03:14 by pablo            ###   ########.fr        #
+#    Updated: 2025/06/09 21:34:44 by pabmart2         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -108,6 +108,7 @@ BONUS_SRC = \
 	bonus/src_bonus/blist_helpers_bonus/blstadd_back_bonus.c \
 	bonus/src_bonus/blist_helpers_bonus/create_node_bonus.c \
 	bonus/src_bonus/blist_helpers_bonus/get_last_node_bonus.c \
+	bonus/src_bonus/operations/operations_execution_bonus.c \
 	bonus/src_bonus/operations/push_bonus.c \
 	bonus/src_bonus/operations/reverse_rotate_bonus.c \
 	bonus/src_bonus/operations/rotate_bonus.c \
@@ -125,8 +126,20 @@ bonus: libft $(BONUS_OBJ)
 	@echo "\033[32m\n¡$(BONUS_NAME) compiled! \
 	ᕦ(\033[36m⌐■\033[32m_\033[36m■\033[32m)ᕤ\n"
 
-debug_bonus: CFLAGS += $(DEBUG_FLAGS)
-debug_bonus: clean bonus
+bonus_debug: CFLAGS += $(DEBUG_FLAGS)
+bonus_debug: bonus_clean bonus
+
+bonus_clean:
+	@rm -rf $(BONUS_OBJ_DIR)
+	@echo "\033[31mBonus object files removed\033[0m"
+
+bonus_fclean: bonus_clean
+	@rm -f $(BONUS_BUILD_DIR)/$(BONUS_NAME)
+	@$(MAKE) -C lib/libft fclean
+	@echo "\033[31m$(BONUS_NAME) removed\033[0m"
+
+bonus_re: bonus_fclean
+	$(MAKE) bonus
 
 $(BONUS_OBJ): $(BONUS_OBJ_DIR)/%.o : %.c $(BONUS_HEADERS)
 	@mkdir -p $(dir $@)
@@ -135,4 +148,4 @@ $(BONUS_OBJ): $(BONUS_OBJ_DIR)/%.o : %.c $(BONUS_HEADERS)
 
 
 ################################################
-.PHONY: all debug clean fclean re bonus debug_bonus
+.PHONY: all debug clean fclean re bonus bonus_debug bonus_clean bonus_fclean bonus_re
