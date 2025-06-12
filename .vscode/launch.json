@@ -8,8 +8,8 @@
 			"name": "Build and debug all files",
 			"type": "cppdbg",
 			"request": "launch",
-			"program": "${fileDirname}/${fileBasenameNoExtension}.out", // Adjust this to match your output executable
-			"args": ["1", "2", "3"], // Example arguments, adjust as needed
+			"program": "${workspaceFolder}pushwap.out", // Adjust this to match your output executable
+			"args": ["1 5 10 3 9 8 7 6 4 2"], // Example arguments, adjust as needed
 
 			"stopAtEntry": false,
 			"cwd": "${workspaceFolder}",
@@ -36,7 +36,7 @@
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}/bonus/checker.out",
-			"args": ["8 9 10 3 7 0 4 2 6 5" ], // Example arguments, adjust as needed
+			"args": ["1 4 2" ], // Example arguments, adjust as needed
 			"stopAtEntry": false,
 			"cwd": "${workspaceFolder}",
 			"environment": [],

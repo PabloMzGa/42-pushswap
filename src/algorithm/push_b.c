@@ -3,43 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   push_b.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/10 01:54:05 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/06 20:34:04 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/12 21:44:00 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pushswap.h"
-
-static void	sort_3(t_stack *stack)
-{
-	int	n1;
-	int	n2;
-	int	n3;
-
-	n1 = stack->top_element->value;
-	n2 = stack->top_element->next->value;
-	n3 = stack->top_element->next->next->value;
-	if (n1 < n2 && n2 < n3)
-		return ;
-	else if (n1 < n2 && n1 < n3 && n2 > n3)
-	{
-		reverse_rotate(stack, NULL, NULL);
-		swap(stack, NULL);
-	}
-	else if (n1 > n2 && n1 < n3 && n2 < n3)
-		swap(stack, NULL);
-	else if (n1 < n2 && n1 > n3 && n2 > n3)
-		reverse_rotate(stack, NULL, NULL);
-	else if (n1 > n2 && n1 > n3 && n2 < n3)
-		rotate(stack, NULL, NULL);
-	else if (n1 > n2 && n1 > n3 && n2 > n3)
-	{
-		rotate(stack, NULL, NULL);
-		swap(stack, NULL);
-	}
-}
 
 void	push_b_algo(t_stack *stack_a, t_stack *stack_b)
 {

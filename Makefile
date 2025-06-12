@@ -6,7 +6,7 @@
 #    By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/09/20 14:34:30 by pabmart2          #+#    #+#              #
-#    Updated: 2025/06/09 21:34:44 by pabmart2         ###   ########.fr        #
+#    Updated: 2025/06/12 21:18:34 by pabmart2         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,6 +33,7 @@ SRC = \
 	src/algorithm/push_a.c \
 	src/algorithm/push_b.c \
 	src/algorithm/search_closest.c \
+	src/algorithm/sort_3.c \
 	src/blist_helpers/blstadd_back.c \
 	src/blist_helpers/create_node.c \
 	src/blist_helpers/get_distance.c \

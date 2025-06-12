@@ -6,7 +6,7 @@
 /*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/09 18:58:48 by pabmart2          #+#    #+#             */
-/*   Updated: 2025/06/09 22:09:07 by pabmart2         ###   ########.fr       */
+/*   Updated: 2025/06/12 21:42:58 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ void	execute_instructions(t_stack *stack_a, t_stack *stack_b)
 	instruction = ft_get_next_line(STDIN_FILENO);
 	while (instruction && instruction[0] != '\n')
 	{
+		if (instruction[ft_strlen(instruction) - 2] != '\n')
+			error(stack_a, stack_b);
 		if (instruction[0] == 's')
 			execute_swap(stack_a, stack_b, instruction);
 		else if (instruction[0] == 'p')

@@ -18,7 +18,7 @@
 				"-I${workspaceFolder}/lib/libft/include/ft_printf",
 				"-lm",
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}.out",
+                "${workspaceFolder}pushwap.out",
             ],
             "options": {
                 "cwd": "${fileDirname}"

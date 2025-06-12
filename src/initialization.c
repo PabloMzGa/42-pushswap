@@ -6,7 +6,7 @@
 /*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 13:28:04 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/09 21:57:03 by pabmart2         ###   ########.fr       */
+/*   Updated: 2025/06/12 21:14:45 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,8 +85,6 @@ t_stack	*populate_a_stack(int argc, char *argv[])
 	t_stack	*stack_a;
 	t_blist	*node;
 
-	if (argc < 2)
-		error(NULL, NULL, NULL);
 	i = 0;
 	value = is_arg_correct(argc, argv, i++, NULL);
 	stack_a = initialize_stack(value, 'A');

@@ -6,7 +6,7 @@
 /*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 11:34:34 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/12 18:33:02 by pabmart2         ###   ########.fr       */
+/*   Updated: 2025/06/12 21:43:52 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ int	main(int argc, char *argv[])
 	t_stack	*stack_a;
 	t_stack	*stack_b;
 
+	if (argc == 1)
+		return (1);
 	cleaned_argv = clean_argv(argc, argv);
 	stack_a = populate_a_stack(ft_matrix_len((void **)cleaned_argv),
 			cleaned_argv);
