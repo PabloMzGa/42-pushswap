@@ -6,12 +6,11 @@
 /*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 11:34:34 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/09 22:03:02 by pabmart2         ###   ########.fr       */
+/*   Updated: 2025/06/12 18:33:02 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "checker.h"
-
 
 int	main(int argc, char *argv[])
 {

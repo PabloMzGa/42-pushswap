@@ -6,7 +6,7 @@
 /*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/07 11:38:01 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/09 22:03:00 by pabmart2         ###   ########.fr       */
+/*   Updated: 2025/06/12 18:33:15 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -221,7 +221,8 @@ t_blist							*get_last_node(t_blist *lst);
  * @param stack_a Pointer to the first stack.
  * @param stack_b Pointer to the second stack.
  */
-void	execute_instructions(t_stack *stack_a, t_stack *stack_b);
+void							execute_instructions(t_stack *stack_a,
+									t_stack *stack_b);
 
 /**
  * Executes a swap operation on the given stacks based on the instruction.
