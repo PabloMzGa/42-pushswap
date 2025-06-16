@@ -6,7 +6,7 @@
 /*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 17:53:40 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/09 22:04:31 by pabmart2         ###   ########.fr       */
+/*   Updated: 2025/06/16 13:00:35 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ void	ko(t_stack *stack_a, t_stack *stack_b)
 		clean_stack(stack_a);
 	if (stack_b)
 		clean_stack(stack_b);
+	ft_get_next_line(-1);
 	write(STDOUT_FILENO, "KO\n", 3);
 	exit(EXIT_FAILURE);
 }

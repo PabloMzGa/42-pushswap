@@ -6,7 +6,7 @@
 /*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:10:32 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/12 21:44:15 by pabmart2         ###   ########.fr       */
+/*   Updated: 2025/06/16 13:06:19 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -301,6 +301,18 @@ int								search_closest_high(int n, t_stack *stack);
  *         compared to `n`. If no such element exists, the function returns -1.
  */
 int								search_closest_low(int n, t_stack *stack);
+
+/**
+ * @brief Sorts a stack containing exactly two elements in ascending order.
+ *
+ * This function compares the top two elements of the given stack. If the first
+ * (top) element is greater than the second, it swaps them to ensure the stack
+ * is sorted in ascending order. Assumes the stack contains at least two
+ * elements.
+ *
+ * @param stack Pointer to the stack to be sorted.
+ */
+void							sort_2(t_stack *stack);
 
 /**
  * @brief Sorts the top three elements of the given stack in ascending order.

@@ -9,7 +9,7 @@
 			"type": "cppdbg",
 			"request": "launch",
 			"program": "${workspaceFolder}pushwap.out", // Adjust this to match your output executable
-			"args": ["1 5 10 3 9 8 7 6 4 2"], // Example arguments, adjust as needed
+			"args": [""], // Example arguments, adjust as needed
 
 			"stopAtEntry": false,
 			"cwd": "${workspaceFolder}",

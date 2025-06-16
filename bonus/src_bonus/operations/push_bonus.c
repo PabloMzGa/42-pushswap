@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   push_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: pablo <pablo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: pabmart2 <pabmart2@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 21:18:26 by pablo             #+#    #+#             */
-/*   Updated: 2025/06/07 13:37:23 by pablo            ###   ########.fr       */
+/*   Updated: 2025/06/16 13:02:35 by pabmart2         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,12 +84,15 @@ static void	push_b(t_stack *stack_a, t_stack *stack_b)
 	stack_b->size++;
 }
 
-void	push(t_stack *stack_a, t_stack *stack_b, char dir)
+void	push(t_stack *stack_a, t_stack *stack_b, char dir, char *instruction)
 {
 	if (dir == 'a')
 	{
 		if (stack_b->size == 0 || !stack_b->top_element)
+		{
+			ft_free((void **)&instruction);
 			ko(stack_a, stack_b);
+		}
 		push_a(stack_a, stack_b);
 	}
 	else if (dir == 'b')
