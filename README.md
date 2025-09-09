@@ -1,10 +1,12 @@
 # Push_Swap
 
-A highly optimized stack sorting algorithm implementation in C that sorts stacks of integers with minimal operations, developed as part of the 42 curriculum.
-
 ![42 School Badge](https://img.shields.io/badge/42-School-black?style=flat-square&logo=42)
 ![C Badge](https://img.shields.io/badge/C-Language-blue?style=flat-square&logo=c)
 ![Build Status](https://img.shields.io/badge/Build-Passing-green?style=flat-square)
+
+A highly optimized stack sorting algorithm implementation in C that sorts stacks of integers with minimal operations, developed as part of the 42 curriculum.
+
+![Pushswap Animation](./assets/Animation.gif)
 
 ## 📋 Table of Contents
 
