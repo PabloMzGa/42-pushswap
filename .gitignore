@@ -1,10 +1,10 @@
 build/*
 *.out
 analysis
-!build/test.sh
 threshold_results
 !build/max_case.txt
 *.a
 *.o
 checker_linux
 logs*
+build_bonus/*
