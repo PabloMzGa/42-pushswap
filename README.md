@@ -323,7 +323,7 @@ This project is part of the 42 School curriculum. The code is available for educ
 
 ### 👨‍💻 Author
 
-**Pablo Martín García**
+**Pablo Martínez García**
 - GitHub: [@PabloMzGa](https://github.com/PabloMzGa)
 - 42 Intra: `pabmart2`
 - School: 42 Málaga
